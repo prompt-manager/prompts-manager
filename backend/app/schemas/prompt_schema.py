@@ -11,18 +11,14 @@ class PromptContent(BaseModel):
 
 class PromptCreate(BaseModel):
     node_name: str
-    model_name: str
-    title: str
     content: PromptContent
+    message: Optional[str] = None
+    version: Optional[int] = 1
 
 
 class PromptRead(BaseModel):
     id: int
-    node_name: str
-    model_name: str
-    title: str
-    content: PromptContent
-    is_active: bool
+    production: bool
     created_at: datetime
     updated_at: Optional[datetime]
 
@@ -32,6 +28,6 @@ class PromptRead(BaseModel):
 
 class PromptUpdate(BaseModel):
     node_name: Optional[str] = None
-    model_name: Optional[str] = None
     content: Optional[PromptContent] = None
-    is_active: Optional[bool] = None
+    message: Optional[str] = None
+    production: Optional[bool] = None

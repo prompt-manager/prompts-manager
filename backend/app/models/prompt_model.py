@@ -7,10 +7,10 @@ prompts = Table(
     metadata,
     Column("id", Integer, primary_key=True, index=True),
     Column("node_name", String(50), nullable=False),
-    Column("model_name", String(50), nullable=False),
-    Column("title", String(100), nullable=False),
-    Column("content", JSON, nullable=False),  # JSON 타입으로 변경
-    Column("is_active", Boolean, default=False),
+    Column("content", JSON, nullable=False),
+    Column("message", String(255), nullable=True),
+    Column("production", Boolean, default=False),
+    Column("version", Integer, nullable=False, default=1),
     Column(
         "created_at",
         DateTime(timezone=True),
