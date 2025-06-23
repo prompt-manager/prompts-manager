@@ -48,10 +48,10 @@ router = APIRouter(prefix="/prompts", tags=["프롬프트 관리"])
                         "production": False,
                         "version": 1,
                         "created_at": "2024-01-01T12:00:00Z",
-                        "updated_at": "2024-01-01T12:00:00Z"
+                        "updated_at": "2024-01-01T12:00:00Z",
                     }
                 }
-            }
+            },
         },
         400: {
             "description": "잘못된 요청 (System 프롬프트 누락 등)",
@@ -59,9 +59,9 @@ router = APIRouter(prefix="/prompts", tags=["프롬프트 관리"])
                 "application/json": {
                     "example": {"detail": "System prompt is required."}
                 }
-            }
-        }
-    }
+            },
+        },
+    },
 )
 async def create_prompt(
     prompt: PromptCreate = Body(
@@ -87,10 +87,9 @@ async def create_prompt(
                         "user": "이 보고서는 최신 시장 동향을 분석하고 있으며, 주요 경쟁사의 전략과 소비자 행동 변화에 초점을 맞추고 있습니다.",
                         "assistant": "보고서는 시장 동향, 경쟁사 전략, 소비자 행동 변화를 분석합니다.",
                     },
-                    "message": "📊 요약 노드의 신규 버전 프롬프트 - 더 간결한 요약을 위해 개선"
+                    "message": "📊 요약 노드의 신규 버전 프롬프트 - 더 간결한 요약을 위해 개선",
                 },
             },
-            
         },
     ),
 ):
@@ -157,33 +156,28 @@ async def create_prompt(
                         "content": {
                             "system": "검색을 도와주는 어시스턴트입니다.",
                             "user": "파리의 날씨는 어때요?",
-                            "assistant": "파리의 현재 날씨를 확인해드리겠습니다."
+                            "assistant": "파리의 현재 날씨를 확인해드리겠습니다.",
                         },
                         "message": "검색 기능 개선",
                         "production": True,
                         "version": 3,
                         "created_at": "2024-01-01T12:00:00Z",
-                        "updated_at": "2024-01-02T14:30:00Z"
+                        "updated_at": "2024-01-02T14:30:00Z",
                     }
                 }
-            }
+            },
         },
         404: {
             "description": "프롬프트를 찾을 수 없음",
             "content": {
-                "application/json": {
-                    "example": {"detail": "Prompt not found"}
-                }
-            }
-        }
-    }
+                "application/json": {"example": {"detail": "Prompt not found"}}
+            },
+        },
+    },
 )
 async def read_prompt(
     prompt_id: int = Path(
-        ..., 
-        description="🆔 조회할 프롬프트의 고유 ID", 
-        example=1,
-        gt=0
+        ..., description="🆔 조회할 프롬프트의 고유 ID", example=1, gt=0
     ),
 ):
     query = select(prompts).where(prompts.c.id == prompt_id)
@@ -230,34 +224,38 @@ async def read_prompt(
                             "production": True,
                             "version": 3,
                             "created_at": "2024-01-03T10:00:00Z",
-                            "updated_at": "2024-01-03T10:00:00Z"
+                            "updated_at": "2024-01-03T10:00:00Z",
                         },
                         {
                             "id": 2,
-                            "node_name": "검색노드", 
+                            "node_name": "검색노드",
                             "content": {"system": "검색 도우미"},
                             "message": "기능 개선",
                             "production": False,
                             "version": 2,
                             "created_at": "2024-01-02T15:30:00Z",
-                            "updated_at": "2024-01-02T15:30:00Z"
-                        }
+                            "updated_at": "2024-01-02T15:30:00Z",
+                        },
                     ]
                 }
-            }
+            },
         }
-    }
+    },
 )
 async def read_prompts_by_node(
     node_name: str = Path(
-        ..., 
-        description="🏷️ 조회할 노드의 이름 (대소문자 구분)", 
+        ...,
+        description="🏷️ 조회할 노드의 이름 (대소문자 구분)",
         example="검색노드",
         min_length=1,
-        max_length=50
+        max_length=50,
     ),
 ):
-    query = select(prompts).where(prompts.c.node_name == node_name).order_by(prompts.c.version.desc())
+    query = (
+        select(prompts)
+        .where(prompts.c.node_name == node_name)
+        .order_by(prompts.c.version.desc())
+    )
     result = await database.fetch_all(query)
     return result
 
@@ -294,42 +292,33 @@ async def read_prompts_by_node(
                     "example": {
                         "id": 1,
                         "node_name": "검색노드",
-                        "content": {
-                            "system": "향상된 검색 어시스턴트입니다."
-                        },
+                        "content": {"system": "향상된 검색 어시스턴트입니다."},
                         "message": "성능 최적화 완료",
                         "production": False,
                         "version": 1,
                         "created_at": "2024-01-01T12:00:00Z",
-                        "updated_at": "2024-01-02T16:45:00Z"
+                        "updated_at": "2024-01-02T16:45:00Z",
                     }
                 }
-            }
+            },
         },
         400: {
             "description": "잘못된 요청 (수정할 필드 없음)",
             "content": {
-                "application/json": {
-                    "example": {"detail": "No update fields provided"}
-                }
-            }
+                "application/json": {"example": {"detail": "No update fields provided"}}
+            },
         },
         404: {
             "description": "프롬프트를 찾을 수 없음",
             "content": {
-                "application/json": {
-                    "example": {"detail": "Prompt not found"}
-                }
-            }
-        }
-    }
+                "application/json": {"example": {"detail": "Prompt not found"}}
+            },
+        },
+    },
 )
 async def update_prompt(
     prompt_id: int = Path(
-        ..., 
-        description="🆔 수정할 프롬프트의 고유 ID", 
-        example=1,
-        gt=0
+        ..., description="🆔 수정할 프롬프트의 고유 ID", example=1, gt=0
     ),
     prompt_update: PromptUpdate = Body(
         ...,
@@ -341,24 +330,24 @@ async def update_prompt(
                     "content": {
                         "system": "당신은 개선된 검색 전문 어시스턴트입니다. 정확하고 관련성 높은 결과를 제공해주세요.",
                         "user": "최신 기술 트렌드에 대해 알려주세요.",
-                        "assistant": "최신 기술 트렌드를 정확한 데이터와 함께 설명드리겠습니다."
+                        "assistant": "최신 기술 트렌드를 정확한 데이터와 함께 설명드리겠습니다.",
                     }
-                }
+                },
             },
             "메시지_업데이트": {
-                "summary": "💬 메시지만 수정", 
+                "summary": "💬 메시지만 수정",
                 "description": "프롬프트 설명이나 메모만 변경하는 경우",
                 "value": {
                     "message": "🚀 검색 기능 대폭 개선 - 응답 속도 30% 향상, 정확도 95% 달성"
-                }
+                },
             },
             "프로덕션_설정": {
                 "summary": "🎯 프로덕션 상태 변경",
                 "description": "프로덕션 배포 상태를 변경하는 경우",
                 "value": {
                     "production": True,
-                    "message": "✅ 품질 검증 완료 - 프로덕션 배포 승인"
-                }
+                    "message": "✅ 품질 검증 완료 - 프로덕션 배포 승인",
+                },
             },
             "전체_업데이트": {
                 "summary": "🔄 종합 업데이트",
@@ -368,9 +357,9 @@ async def update_prompt(
                         "system": "당신은 최첨단 AI 검색 어시스턴트입니다. 사용자의 질문을 정확히 이해하고 최적의 답변을 제공합니다."
                     },
                     "message": "🎉 v2.0 메이저 업데이트 - AI 모델 업그레이드 완료",
-                    "production": False
-                }
-            }
+                    "production": False,
+                },
+            },
         },
     ),
 ):
@@ -427,28 +416,21 @@ async def update_prompt(
             "description": "프롬프트 삭제 성공",
             "content": {
                 "application/json": {
-                    "example": {
-                        "detail": "Prompt with id 1 has been deleted."
-                    }
+                    "example": {"detail": "Prompt with id 1 has been deleted."}
                 }
-            }
+            },
         },
         404: {
             "description": "프롬프트를 찾을 수 없음",
             "content": {
-                "application/json": {
-                    "example": {"detail": "Prompt not found"}
-                }
-            }
-        }
-    }
+                "application/json": {"example": {"detail": "Prompt not found"}}
+            },
+        },
+    },
 )
 async def delete_prompt(
     prompt_id: int = Path(
-        ..., 
-        description="🆔 삭제할 프롬프트의 고유 ID", 
-        example=1,
-        gt=0
+        ..., description="🆔 삭제할 프롬프트의 고유 ID", example=1, gt=0
     ),
 ):
     query = select(prompts).where(prompts.c.id == prompt_id)
@@ -496,34 +478,27 @@ async def delete_prompt(
                     "example": {
                         "id": 5,
                         "node_name": "검색노드",
-                        "content": {
-                            "system": "최신 프로덕션 검색 어시스턴트"
-                        },
+                        "content": {"system": "최신 프로덕션 검색 어시스턴트"},
                         "message": "v3.0 정식 배포",
                         "production": True,
                         "version": 3,
                         "created_at": "2024-01-01T12:00:00Z",
-                        "updated_at": "2024-01-01T12:00:00Z"
+                        "updated_at": "2024-01-01T12:00:00Z",
                     }
                 }
-            }
+            },
         },
         404: {
             "description": "프롬프트를 찾을 수 없음",
             "content": {
-                "application/json": {
-                    "example": {"detail": "Prompt not found"}
-                }
-            }
-        }
-    }
+                "application/json": {"example": {"detail": "Prompt not found"}}
+            },
+        },
+    },
 )
 async def set_production_prompt(
     prompt_id: int = Path(
-        ..., 
-        description="🚀 프로덕션으로 배포할 프롬프트의 고유 ID", 
-        example=1,
-        gt=0
+        ..., description="🚀 프로덕션으로 배포할 프롬프트의 고유 ID", example=1, gt=0
     ),
 ):
     # 선택된 프롬프트 정보 가져오기
@@ -556,7 +531,7 @@ async def set_production_prompt(
     return activated_prompt
 
 
-# 프롬프트 개수 조회 
+# 프롬프트 개수 조회
 @router.get(
     "/count/{node_name}",
     tags=["노드 관리"],
@@ -577,22 +552,15 @@ async def set_production_prompt(
         200: {
             "description": "프롬프트 개수 조회 성공",
             "content": {
-                "application/json": {
-                    "example": {
-                        "node_name": "검색노드",
-                        "count": 5
-                    }
-                }
-            }
+                "application/json": {"example": {"node_name": "검색노드", "count": 5}}
+            },
         }
-    }
+    },
 )
 async def count_prompts_by_node_name(
     node_name: str = Path(
-        ...,
-        description="🏷️ 개수를 조회할 노드 이름",
-        example="검색노드"
-    )
+        ..., description="🏷️ 개수를 조회할 노드 이름", example="검색노드"
+    ),
 ):
     query = select(prompts).where(prompts.c.node_name == node_name)
     result = await database.fetch_all(query)
@@ -632,16 +600,14 @@ async def count_prompts_by_node_name(
                         "detail": "All prompts with node_name '검색노드' deleted."
                     }
                 }
-            }
+            },
         }
-    }
+    },
 )
 async def delete_prompts_by_node_name(
     node_name: str = Path(
-        ...,
-        description="🗑️ 모든 프롬프트를 삭제할 노드 이름",
-        example="테스트노드"
-    )
+        ..., description="🗑️ 모든 프롬프트를 삭제할 노드 이름", example="테스트노드"
+    ),
 ):
     query = delete(prompts).where(prompts.c.node_name == node_name)
     result = await database.execute(query)
@@ -680,44 +646,30 @@ async def delete_prompts_by_node_name(
                     "example": {
                         "id": 2,
                         "node_name": "검색노드",
-                        "content": {
-                            "system": "이전 버전의 검색 어시스턴트"
-                        },
+                        "content": {"system": "이전 버전의 검색 어시스턴트"},
                         "message": "v1.5 안정화 버전",
                         "production": False,
                         "version": 2,
                         "created_at": "2024-01-01T12:00:00Z",
-                        "updated_at": "2024-01-01T12:00:00Z"
+                        "updated_at": "2024-01-01T12:00:00Z",
                     }
                 }
-            }
+            },
         },
         404: {
             "description": "해당 버전의 프롬프트를 찾을 수 없음",
             "content": {
-                "application/json": {
-                    "example": {"detail": "Prompt version not found"}
-                }
-            }
-        }
-    }
+                "application/json": {"example": {"detail": "Prompt version not found"}}
+            },
+        },
+    },
 )
 async def read_prompt_by_version(
-    node_name: str = Path(
-        ...,
-        description="🏷️ 노드 이름",
-        example="검색노드"
-    ),
-    version: int = Path(
-        ...,
-        description="🔢 조회할 버전 번호",
-        example=2,
-        ge=1
-    )
+    node_name: str = Path(..., description="🏷️ 노드 이름", example="검색노드"),
+    version: int = Path(..., description="🔢 조회할 버전 번호", example=2, ge=1),
 ):
     query = select(prompts).where(
-        prompts.c.node_name == node_name,
-        prompts.c.version == version
+        prompts.c.node_name == node_name, prompts.c.version == version
     )
     prompt = await database.fetch_one(query)
     if not prompt:
@@ -758,7 +710,7 @@ async def read_prompt_by_version(
                         "detail": "Prompt with node '검색노드' and version '2' has been deleted."
                     }
                 }
-            }
+            },
         },
         404: {
             "description": "해당 버전의 프롬프트를 찾을 수 없음",
@@ -768,40 +720,31 @@ async def read_prompt_by_version(
                         "detail": "Prompt with node '검색노드' and version '2' not found."
                     }
                 }
-            }
-        }
-    }
+            },
+        },
+    },
 )
 async def delete_prompt_by_version(
-    node_name: str = Path(
-        ..., 
-        description="🏷️ 노드 이름", 
-        example="검색노드"
-    ),
+    node_name: str = Path(..., description="🏷️ 노드 이름", example="검색노드"),
     version: int = Path(
-        ..., 
-        description="🔢 삭제할 프롬프트의 버전 번호", 
-        example=3,
-        ge=1
+        ..., description="🔢 삭제할 프롬프트의 버전 번호", example=3, ge=1
     ),
 ):
     # 프롬프트 존재 여부 확인
     query = select(prompts).where(
-        prompts.c.node_name == node_name,
-        prompts.c.version == version
+        prompts.c.node_name == node_name, prompts.c.version == version
     )
     existing_prompt = await database.fetch_one(query)
 
     if not existing_prompt:
         raise HTTPException(
             status_code=404,
-            detail=f"Prompt with node '{node_name}' and version '{version}' not found."
+            detail=f"Prompt with node '{node_name}' and version '{version}' not found.",
         )
 
     # 프롬프트 삭제 수행
     delete_query = delete(prompts).where(
-        prompts.c.node_name == node_name,
-        prompts.c.version == version
+        prompts.c.node_name == node_name, prompts.c.version == version
     )
     await database.execute(delete_query)
 
@@ -809,3 +752,107 @@ async def delete_prompt_by_version(
         "detail": f"Prompt with node '{node_name}' and version '{version}' has been deleted."
     }
 
+
+# 특정 노드의 특정 버전 프롬프트 수정
+@router.put(
+    "/node/{node_name}/version/{version}",
+    response_model=PromptRead,
+    status_code=status.HTTP_200_OK,
+    tags=["기본 CRUD"],
+    summary="✏️ 특정 노드의 특정 버전 프롬프트 수정",
+    description="""
+    ## 특정 노드의 특정 버전 프롬프트를 수정합니다
+    
+    ### 📋 필수 사항
+    - **Node Name**: 수정할 프롬프트의 노드 이름
+    - **Version**: 수정할 프롬프트의 버전 번호
+    
+    ### 🔧 수정 가능 항목
+    - **Content**: 프롬프트 내용 (system, user, assistant)
+    - **Message**: 프롬프트 설명이나 메모
+    
+    ### ⚙️ 자동 처리
+    - **Updated At**: UTC 기준 자동 업데이트
+    """,
+    responses={
+        200: {
+            "description": "프롬프트가 성공적으로 수정됨",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "id": 1,
+                        "node_name": "검색노드",
+                        "content": {
+                            "system": "수정된 시스템 프롬프트",
+                            "user": "수정된 유저 프롬프트",
+                        },
+                        "message": "수정된 메시지",
+                        "production": False,
+                        "version": 1,
+                        "created_at": "2024-01-01T12:00:00Z",
+                        "updated_at": "2024-01-01T13:00:00Z",
+                    }
+                }
+            },
+        },
+        404: {
+            "description": "해당 버전의 프롬프트를 찾을 수 없음",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Prompt with node '검색노드' and version '1' not found."
+                    }
+                }
+            },
+        },
+    },
+)
+async def update_prompt_by_version(
+    node_name: str = Path(..., description="🏷️ 노드 이름", example="검색노드"),
+    version: int = Path(
+        ..., description="🔢 수정할 프롬프트의 버전 번호", example=1, ge=1
+    ),
+    prompt_update: PromptUpdate = Body(
+        ...,
+        openapi_examples={
+            "콘텐츠 수정": {
+                "summary": "프롬프트 내용을 변경하는 경우",
+                "value": {
+                    "content": {
+                        "system": "변경된 시스템 프롬프트",
+                        "user": "변경된 유저 프롬프트",
+                    }
+                },
+            },
+            "메시지 수정": {
+                "summary": "메시지 필드를 변경하는 경우",
+                "value": {"message": "변경된 메시지"},
+            },
+        },
+    ),
+):
+    # 기존 프롬프트 조회
+    query = select(prompts).where(
+        prompts.c.node_name == node_name, prompts.c.version == version
+    )
+    existing_prompt = await database.fetch_one(query)
+
+    if not existing_prompt:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Prompt with node '{node_name}' and version '{version}' not found.",
+        )
+
+    update_data = prompt_update.model_dump(exclude_unset=True)
+    update_data["updated_at"] = datetime.now(timezone.utc)
+
+    # 프롬프트 수정 수행
+    update_query = (
+        update(prompts)
+        .where(prompts.c.node_name == node_name, prompts.c.version == version)
+        .values(**update_data)
+        .returning(prompts)
+    )
+
+    updated_prompt = await database.fetch_one(update_query)
+    return updated_prompt

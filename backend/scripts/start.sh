@@ -7,6 +7,6 @@ SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 source "${SCRIPT_DIR}/../.venv/bin/activate"
 
 # 백그라운드에서 Uvicorn 실행 (pid 저장)
-nohup uvicorn app.main:app --host 0.0.0.0 --port 1117 > "${SCRIPT_DIR}/uvicorn.log" 2>&1 & echo $! > "${SCRIPT_DIR}/server.pid"
+nohup uvicorn app.main:app --host 0.0.0.0 --port 1122 > "${SCRIPT_DIR}/uvicorn.log" 2>&1 & echo $! > "${SCRIPT_DIR}/server.pid"
 
 echo "🚀 FastAPI 서버가 시작되었습니다!"
