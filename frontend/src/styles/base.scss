@@ -44,5 +44,5 @@ button {
   background: var(--background);
 }
 .ant-empty-description {
-  color: var(--text-secondary);
+  color: var(--text-secondary) !important;
 }
