@@ -10,13 +10,13 @@ from app.utils.response_utils import create_success_response, create_error_respo
 from sqlalchemy import select, insert, update, delete, func, distinct
 from datetime import datetime, timezone, timedelta
 
-router = APIRouter(prefix="/prompts", tags=["프롬프트 관리"])
+router = APIRouter(prefix="/prompts", tags=["📝 1. 프롬프트 관리"])
 
 
 # 모든 프롬프트 페이지네이션 조회
 @router.get(
     "/",
-    tags=["기본 CRUD"],
+    tags=["📋 4. 조회 및 검색"],
     summary="📋 모든 프롬프트 페이지네이션 조회",
     description="""
     ## 모든 프롬프트를 페이지네이션으로 조회합니다
@@ -123,7 +123,7 @@ async def get_prompts_paginated(
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
-    tags=["기본 CRUD"],
+    tags=["📝 1. 프롬프트 관리"],
     summary="🆕 새 프롬프트 생성",
     description="""
     ## 새로운 프롬프트를 생성합니다
@@ -239,7 +239,7 @@ async def create_prompt(
 # 특정 프롬프트 조회 (Read) - ID로 조회
 @router.get(
     "/id/{prompt_id}",
-    tags=["기본 CRUD"],
+    tags=["📝 1. 프롬프트 관리"],
     summary="🔍 ID로 프롬프트 조회",
     description="""
     ## 고유 ID로 특정 프롬프트를 조회합니다
@@ -298,7 +298,7 @@ async def read_prompt(
 # 특정 노드를 기준으로 프롬프트 조회 (모든 버전 조회)
 @router.get(
     "/node/{node_name}",
-    tags=["노드 관리"],
+    tags=["📋 4. 조회 및 검색"],
     summary="📦 노드별 모든 프롬프트 조회",
     description="""
     ## 특정 노드의 모든 프롬프트 버전을 조회합니다
@@ -370,7 +370,7 @@ async def read_prompts_by_node(
 # 프롬프트 수정 (Update)
 @router.put(
     "/id/{prompt_id}",
-    tags=["기본 CRUD"],
+    tags=["📝 1. 프롬프트 관리"],
     summary="✏️ 프롬프트 수정",
     description="""
     ## 기존 프롬프트를 수정합니다
@@ -498,7 +498,7 @@ async def update_prompt(
 @router.delete(
     "/id/{prompt_id}",
     status_code=status.HTTP_200_OK,
-    tags=["기본 CRUD"],
+    tags=["📝 1. 프롬프트 관리"],
     summary="🗑️ 프롬프트 삭제",
     description="""
     ## 특정 프롬프트를 영구적으로 삭제합니다
@@ -554,7 +554,7 @@ async def delete_prompt(
 # 특정 프롬프트를 프로덕션으로 설정 (다른 버전은 비프로덕션으로 처리)
 @router.post(
     "/{prompt_id}/production",
-    tags=["프로덕션 관리"],
+    tags=["⚙️ 5. 고급 관리"],
     summary="🚀 프로덕션 배포",
     description="""
     ## 특정 프롬프트를 프로덕션으로 배포합니다
@@ -639,7 +639,7 @@ async def set_production_prompt(
 # 모든 노드 목록 조회
 @router.get(
     "/nodes",
-    tags=["노드 관리"],
+    tags=["📋 4. 조회 및 검색"],
     summary="📋 모든 노드 목록 조회",
     description="""
     ## 시스템에 등록된 모든 노드의 목록을 조회합니다
@@ -730,7 +730,7 @@ async def get_all_nodes():
 # 프롬프트 개수 조회
 @router.get(
     "/count/{node_name}",
-    tags=["노드 관리"],
+    tags=["📋 4. 조회 및 검색"],
     summary="📊 노드별 프롬프트 개수",
     description="""
     ## 특정 노드의 프롬프트 총 개수를 조회합니다
@@ -766,7 +766,7 @@ async def count_prompts_by_node_name(
 
 @router.delete(
     "/delete-all/{node_name}",
-    tags=["노드 관리"],
+    tags=["⚙️ 5. 고급 관리"],
     summary="💣 노드 전체 삭제",
     description="""
     ## ⚠️ 위험: 노드의 모든 프롬프트를 삭제합니다
@@ -813,7 +813,7 @@ async def delete_prompts_by_node_name(
 # 특정 버전의 프롬프트 조회
 @router.get(
     "/node/{node_name}/version/{version}",
-    tags=["버전 관리"],
+    tags=["⚙️ 5. 고급 관리"],
     summary="🔢 특정 버전 프롬프트 조회",
     description="""
     ## 노드의 특정 버전 프롬프트를 조회합니다
@@ -876,7 +876,7 @@ async def read_prompt_by_version(
 @router.delete(
     "/node/{node_name}/version/{version}",
     status_code=status.HTTP_200_OK,
-    tags=["버전 관리"],
+    tags=["⚙️ 5. 고급 관리"],
     summary="🗑️ 특정 버전 삭제",
     description="""
     ## 노드의 특정 버전 프롬프트를 삭제합니다
@@ -952,7 +952,7 @@ async def delete_prompt_by_version(
 @router.put(
     "/node/{node_name}/version/{version}",
     status_code=status.HTTP_200_OK,
-    tags=["기본 CRUD"],
+    tags=["⚙️ 5. 고급 관리"],
     summary="✏️ 특정 노드의 특정 버전 프롬프트 수정",
     description="""
     ## 특정 노드의 특정 버전 프롬프트를 수정합니다

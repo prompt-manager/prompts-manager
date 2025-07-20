@@ -15,7 +15,53 @@ async def lifespan(app: FastAPI):
     await database.disconnect()
 
 
-app = FastAPI(lifespan=lifespan)
+tags_metadata = [
+    {
+        "name": "📝 1. 프롬프트 관리",
+        "description": "프롬프트의 생성, 조회, 수정, 삭제 등 기본 CRUD 작업",
+    },
+    {
+        "name": "📊 2. 데이터셋 관리", 
+        "description": "데이터셋의 업로드, 수정, 삭제, 다운로드 등 관리 작업",
+    },
+    {
+        "name": "🧪 3. 평가 관리",
+        "description": "프롬프트 평가 실행 및 결과 관리",
+    },
+    {
+        "name": "📋 4. 조회 및 검색",
+        "description": "페이지네이션 조회, 검색, 필터링, 통계 정보 등",
+    },
+    {
+        "name": "⚙️ 5. 고급 관리",
+        "description": "버전 관리, 프로덕션 배포, 노드 관리 등 고급 기능",
+    },
+]
+
+app = FastAPI(
+    title="🤖 AI Prompt Manager API",
+    description="""
+    ## AI 프롬프트 관리 시스템 API
+    
+    이 API는 AI 프롬프트의 생성, 관리, 평가를 위한 완전한 솔루션을 제공합니다.
+    
+    ### 🌟 주요 기능
+    - **프롬프트 관리**: 다양한 AI 프롬프트의 버전 관리 및 배포
+    - **데이터셋 관리**: CSV 기반 데이터셋 업로드 및 관리  
+    - **평가 시스템**: 프롬프트 성능 평가 및 결과 추적
+    - **페이지네이션**: 대용량 데이터의 효율적 조회
+    - **검색 및 필터링**: 강력한 검색 및 필터링 기능
+    
+    ### 📚 사용 가이드
+    1. **시작하기**: 프롬프트 생성부터 시작하세요
+    2. **데이터셋 준비**: CSV 파일을 업로드하여 평가용 데이터를 준비하세요
+    3. **평가 실행**: 프롬프트와 데이터셋으로 성능 평가를 진행하세요
+    4. **결과 분석**: 페이지네이션과 필터링으로 결과를 분석하세요
+    """,
+    version="1.0.0",
+    lifespan=lifespan,
+    openapi_tags=tags_metadata
+)
 
 # CORS 설정
 app.add_middleware(

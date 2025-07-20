@@ -12,7 +12,7 @@ from app.schemas.response_schema import ResponseSchema
 from app.schemas.pagination_schema import PaginationParams, PaginatedResponse
 from app.utils.response_utils import create_success_response, create_error_response, create_paginated_response, get_total_count
 
-router = APIRouter(prefix="/evaluations", tags=["Evaluations"])
+router = APIRouter(prefix="/evaluations", tags=["🧪 3. 평가 관리"])
 
 # 평가 요청 스키마
 class EvaluationRequest(BaseModel):
@@ -29,7 +29,8 @@ class EvaluationResult(BaseModel):
 
 @router.post(
     "/run",
-    summary="프롬프트 평가 실행 및 결과 저장",
+    tags=["🧪 3. 평가 관리"],
+    summary="🚀 프롬프트 평가 실행 및 결과 저장",
     description="평가 실행 후 결과를 데이터베이스에 저장합니다."
 )
 async def evaluate_prompt(request: EvaluationRequest = Body(...)):
@@ -91,6 +92,7 @@ class EvaluationResultRead(BaseModel):
 
 @router.get(
     "/results",
+    tags=["📋 4. 조회 및 검색"],
     summary="📋 모든 평가 결과 페이지네이션 조회",
     description="""
     ## 모든 평가 결과를 페이지네이션으로 조회합니다

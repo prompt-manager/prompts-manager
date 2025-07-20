@@ -10,13 +10,14 @@ from sqlalchemy import select, insert, delete, update, or_, func
 from datetime import datetime, timezone
 from fastapi.responses import Response, JSONResponse
 
-router = APIRouter(prefix="/datasets", tags=["Datasets"])
+router = APIRouter(prefix="/datasets", tags=["📊 2. 데이터셋 관리"])
 
 
 # CSV 파일을 업로드하여 데이터셋 생성
 @router.post(
     "/",
-    summary="데이터셋 업로드 (CSV)",
+    tags=["📊 2. 데이터셋 관리"],
+    summary="📤 데이터셋 업로드 (CSV)",
     description="CSV 파일을 업로드하여 새로운 데이터셋을 생성합니다. 데이터셋 이름은 중복될 수 없습니다.",
 )
 async def upload_dataset(
@@ -79,6 +80,7 @@ async def upload_dataset(
 # 모든 데이터셋 페이지네이션 조회  
 @router.get(
     "/",
+    tags=["📋 4. 조회 및 검색"],
     summary="📋 모든 데이터셋 페이지네이션 조회",
     description="""
     ## 모든 데이터셋을 페이지네이션으로 조회합니다
@@ -188,7 +190,8 @@ async def get_datasets_paginated(
 # 특정 데이터셋 삭제
 @router.delete(
     "/{dataset_id}",
-    summary="특정 데이터셋 삭제",
+    tags=["📊 2. 데이터셋 관리"],
+    summary="🗑️ 특정 데이터셋 삭제",
     description="ID를 사용하여 특정 데이터셋을 삭제합니다.",
     responses={
         200: {
@@ -228,7 +231,8 @@ async def delete_dataset(dataset_id: int):
 
 @router.get(
     "/{dataset_id}",
-    summary="특정 데이터셋 조회",
+    tags=["📊 2. 데이터셋 관리"],
+    summary="🔍 특정 데이터셋 조회",
     description="데이터셋의 고유 ID로 특정 데이터셋의 상세 정보를 조회합니다.",
 )
 async def get_dataset(dataset_id: int):
@@ -251,7 +255,8 @@ async def get_dataset(dataset_id: int):
 
 @router.put(
     "/{dataset_id}",
-    summary="데이터셋 수정",
+    tags=["📊 2. 데이터셋 관리"],
+    summary="✏️ 데이터셋 수정",
     description=(
         "데이터셋의 이름과 설명만 수정합니다. CSV 내용 수정은 지원하지 않습니다. "
         "변경할 필드만 요청 본문에 포함시키세요."
@@ -324,7 +329,8 @@ async def update_dataset(
 
 @router.get(
     "/{dataset_id}/download",
-    summary="데이터셋 다운로드",
+    tags=["📊 2. 데이터셋 관리"],
+    summary="📥 데이터셋 다운로드",
     description="지정한 데이터셋을 CSV 파일로 다운로드합니다. 브라우저에서 직접 다운로드하거나 API 클라이언트에서 파일로 저장할 수 있습니다.",
     responses={
         200: {
@@ -370,7 +376,8 @@ async def download_dataset(dataset_id: int):
 
 @router.get(
     "/search/",
-    summary="데이터셋 검색",
+    tags=["📋 4. 조회 및 검색"],
+    summary="🔍 데이터셋 검색",
     description="데이터셋의 이름이나 설명에서 키워드를 기준으로 검색합니다."
 )
 async def search_datasets(query: str):
