@@ -5,7 +5,7 @@ class Evaluator(ABC):
     @abstractmethod
     def evaluate(self, prompt_content: str, dataset_content: str):
         pass
- 
+
 # 정확성 평가 클래스
 class AccuracyEvaluator(Evaluator):
     def evaluate(self, prompt_content: str, dataset_content: str):
