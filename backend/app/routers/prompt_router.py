@@ -5,7 +5,7 @@ from app.models.prompt_model import prompts
 from app.schemas.prompt_schema import PromptCreate, PromptRead, PromptUpdate
 from app.schemas.response_schema import ResponseSchema
 from app.utils.response_utils import create_success_response, create_error_response
-from sqlalchemy import select, insert, update, delete
+from sqlalchemy import select, insert, update, delete, func, distinct
 from datetime import datetime, timezone, timedelta
 
 router = APIRouter(prefix="/prompts", tags=["프롬프트 관리"])
@@ -526,6 +526,97 @@ async def set_production_prompt(
     activated_prompt = await database.fetch_one(activate_query)
 
     return create_success_response(activated_prompt, "프롬프트가 성공적으로 프로덕션으로 배포되었습니다.")
+
+
+# 모든 노드 목록 조회
+@router.get(
+    "/nodes",
+    tags=["노드 관리"],
+    summary="📋 모든 노드 목록 조회",
+    description="""
+    ## 시스템에 등록된 모든 노드의 목록을 조회합니다
+    
+    ### 📊 반환 정보
+    - **노드 이름**: 각 노드의 고유 이름
+    - **프롬프트 개수**: 해당 노드의 총 프롬프트 수
+    - **프로덕션 프롬프트 ID**: 현재 프로덕션 상태인 프롬프트 ID (없으면 null)
+    - **최신 버전**: 해당 노드의 최신 프롬프트 버전 번호
+    
+    ### 🎯 활용 방법
+    - 시스템 전체 노드 현황 파악
+    - 프론트엔드 노드 선택 드롭다운용 데이터
+    - 노드별 관리 상태 모니터링
+    - 대시보드 통계 정보 제공
+    
+    ### 💡 참고
+    - 프롬프트가 없는 노드는 목록에 나타나지 않습니다
+    - 노드 이름 순으로 정렬되어 반환됩니다
+    """,
+    responses={
+        200: {
+            "description": "노드 목록 조회 성공",
+            "content": {
+                "application/json": {
+                    "example": [
+                        {
+                            "node_name": "검색노드",
+                            "prompt_count": 5,
+                            "production_prompt_id": 3,
+                            "latest_version": 5
+                        },
+                                                 {
+                             "node_name": "요약노드", 
+                             "prompt_count": 2,
+                             "production_prompt_id": None,
+                             "latest_version": 2
+                         }
+                    ]
+                }
+            },
+        }
+    },
+)
+async def get_all_nodes():
+    """
+    시스템에 등록된 모든 노드의 목록과 기본 통계를 반환합니다.
+    각 노드별로 프롬프트 개수, 프로덕션 프롬프트, 최신 버전 정보를 포함합니다.
+    """
+    try:
+        # 모든 노드 이름과 기본 통계 정보 조회
+        query = select(
+            prompts.c.node_name,
+            func.count(prompts.c.id).label('prompt_count'),
+            func.max(prompts.c.version).label('latest_version')
+        ).group_by(prompts.c.node_name).order_by(prompts.c.node_name)
+        
+        nodes_stats = await database.fetch_all(query)
+        
+        result = []
+        for node_stat in nodes_stats:
+            # 각 노드의 프로덕션 프롬프트 ID 조회
+            production_query = select(prompts.c.id).where(
+                prompts.c.node_name == node_stat.node_name,
+                prompts.c.production == True
+            )
+            production_prompt = await database.fetch_one(production_query)
+            
+            node_info = {
+                "node_name": node_stat.node_name,
+                "prompt_count": node_stat.prompt_count,
+                "production_prompt_id": production_prompt.id if production_prompt else None,
+                "latest_version": node_stat.latest_version
+            }
+            result.append(node_info)
+        
+        # 결과를 직접 반환 (이미 딕셔너리 형태이므로 convert 불필요)
+        return ResponseSchema(
+            status="success",
+            data=result,
+            message="노드 목록을 성공적으로 조회했습니다."
+        )
+        
+    except Exception as e:
+        return create_error_response(f"노드 목록 조회 중 오류가 발생했습니다: {str(e)}")
 
 
 # 프롬프트 개수 조회
