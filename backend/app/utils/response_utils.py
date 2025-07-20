@@ -1,6 +1,8 @@
 from typing import Any, List, Union, Dict
 from app.schemas.response_schema import ResponseSchema
+from app.schemas.pagination_schema import PaginatedResponse, PaginationData, create_pagination_data
 from datetime import datetime
+from sqlalchemy import func, select
 
 
 def convert_record_to_dict(record: Any) -> Dict[str, Any]:
@@ -45,4 +47,46 @@ def create_error_response(message: str, data: Any = None) -> ResponseSchema:
         status="error",
         data=data,
         message=message
-    ) 
+    )
+
+
+def create_paginated_response(
+    items: List[Any], 
+    page: int, 
+    size: int, 
+    total: int,
+    message: str = "페이지네이션 조회가 성공적으로 완료되었습니다."
+) -> PaginatedResponse:
+    """페이지네이션 응답 생성"""
+    # 아이템들을 딕셔너리로 변환
+    converted_items = []
+    for item in items:
+        if isinstance(item, list):
+            converted_items.extend(convert_records_to_list(item))
+        elif hasattr(item, '_mapping'):  # Database record
+            converted_items.append(convert_record_to_dict(item))
+        else:
+            converted_items.append(item)
+    
+    pagination_data = create_pagination_data(converted_items, page, size, total)
+    
+    return PaginatedResponse(
+        status="success",
+        data=pagination_data,
+        message=message
+    )
+
+
+async def get_total_count(database, table) -> int:
+    """테이블의 전체 레코드 수 조회"""
+    count_query = select(func.count()).select_from(table)
+    result = await database.fetch_one(count_query)
+    return result[0] if result else 0
+
+
+async def get_total_count_with_filter(database, query) -> int:
+    """필터가 적용된 쿼리의 전체 레코드 수 조회"""
+    # 기존 쿼리에서 SELECT 부분만 COUNT로 변경
+    count_query = select(func.count()).select_from(query.alias())
+    result = await database.fetch_one(count_query)
+    return result[0] if result else 0 

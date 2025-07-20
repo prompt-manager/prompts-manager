@@ -1,14 +1,122 @@
-from fastapi import APIRouter, HTTPException, Body, Path, status
+from fastapi import APIRouter, HTTPException, Body, Path, status, Query, Depends
 from typing import List
 from app.database import database
 from app.models.prompt_model import prompts
 from app.schemas.prompt_schema import PromptCreate, PromptRead, PromptUpdate
 from app.schemas.response_schema import ResponseSchema
-from app.utils.response_utils import create_success_response, create_error_response
+from app.schemas.pagination_schema import PaginationParams, PaginatedResponse
+from app.utils.response_utils import create_success_response, create_error_response, create_paginated_response, get_total_count
+
 from sqlalchemy import select, insert, update, delete, func, distinct
 from datetime import datetime, timezone, timedelta
 
 router = APIRouter(prefix="/prompts", tags=["프롬프트 관리"])
+
+
+# 모든 프롬프트 페이지네이션 조회
+@router.get(
+    "/",
+    tags=["기본 CRUD"],
+    summary="📋 모든 프롬프트 페이지네이션 조회",
+    description="""
+    ## 모든 프롬프트를 페이지네이션으로 조회합니다
+    
+    ### 📊 페이지네이션 파라미터
+    - **page**: 페이지 번호 (1부터 시작, 기본값: 1)
+    - **size**: 페이지당 항목 수 (1-100, 기본값: 10)
+    - **node_name**: 특정 노드로 필터링 (선택 사항)
+    
+    ### 📈 반환 정보
+    - **items**: 프롬프트 목록
+    - **page**: 현재 페이지 번호
+    - **size**: 페이지당 항목 수
+    - **total**: 전체 프롬프트 수
+    - **total_pages**: 전체 페이지 수
+    - **has_next**: 다음 페이지 존재 여부
+    - **has_prev**: 이전 페이지 존재 여부
+    
+    ### 🎯 활용 방법
+    - 프론트엔드 테이블 페이지네이션
+    - 대용량 데이터 효율적 로딩
+    - 노드별 필터링과 페이지네이션 조합
+    """,
+    responses={
+        200: {
+            "description": "프롬프트 페이지네이션 조회 성공",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "success",
+                        "data": {
+                            "items": [
+                                {
+                                    "id": 1,
+                                    "node_name": "검색노드",
+                                    "content": {"system": "검색 어시스턴트"},
+                                    "production": True,
+                                    "version": 1
+                                }
+                            ],
+                            "page": 1,
+                            "size": 10,
+                            "total": 50,
+                            "total_pages": 5,
+                            "has_next": True,
+                            "has_prev": False
+                        },
+                        "message": "프롬프트 목록을 성공적으로 조회했습니다."
+                    }
+                }
+            },
+        }
+    },
+)
+async def get_prompts_paginated(
+    pagination: PaginationParams = Depends(),
+    node_name: str = Query(None, description="노드 이름으로 필터링")
+):
+    """
+    모든 프롬프트를 페이지네이션으로 조회합니다.
+    노드 이름으로 필터링도 가능합니다.
+    """
+    try:
+        # 기본 쿼리 구성
+        base_query = select(prompts)
+        
+        # 노드 필터링 적용
+        if node_name:
+            base_query = base_query.where(prompts.c.node_name == node_name)
+        
+        # 전체 개수 조회
+        count_query = select(func.count()).select_from(
+            base_query.alias()
+        )
+        total = await database.fetch_one(count_query)
+        total_count = total[0] if total else 0
+        
+        # 페이지네이션 적용된 데이터 조회
+        paginated_query = (
+            base_query
+            .order_by(prompts.c.created_at.desc())
+            .limit(pagination.size)
+            .offset((pagination.page - 1) * pagination.size)
+        )
+        
+        items = await database.fetch_all(paginated_query)
+        
+        filter_message = f" (노드: {node_name})" if node_name else ""
+        message = f"프롬프트 목록을 성공적으로 조회했습니다{filter_message}."
+        
+        return create_paginated_response(
+            items=items,
+            page=pagination.page,
+            size=pagination.size,
+            total=total_count,
+            message=message
+        )
+        
+    except Exception as e:
+        return create_error_response(f"프롬프트 목록 조회 중 오류가 발생했습니다: {str(e)}")
 
 
 # 프롬프트 추가 (System 필수, User/Assistant 선택)

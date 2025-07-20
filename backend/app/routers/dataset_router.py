@@ -1,11 +1,12 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Body
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Body, Query, Depends
 from typing import List, Optional
 from app.database import database
 from app.models.dataset_model import datasets
 from app.schemas.dataset_schema import DatasetRead, DatasetUpdate
 from app.schemas.response_schema import ResponseSchema
-from app.utils.response_utils import create_success_response, create_error_response
-from sqlalchemy import select, insert, delete, update, or_
+from app.schemas.pagination_schema import PaginationParams, PaginatedResponse
+from app.utils.response_utils import create_success_response, create_error_response, create_paginated_response, get_total_count
+from sqlalchemy import select, insert, delete, update, or_, func
 from datetime import datetime, timezone
 from fastapi.responses import Response, JSONResponse
 
@@ -75,20 +76,113 @@ async def upload_dataset(
     return create_success_response(created_dataset, "데이터셋이 성공적으로 생성되었습니다.")
 
 
-# 모든 데이터셋 조회
+# 모든 데이터셋 페이지네이션 조회  
 @router.get(
     "/",
-    summary="모든 데이터셋 조회",
-    description="시스템에 저장된 모든 데이터셋의 목록을 조회합니다.",
+    summary="📋 모든 데이터셋 페이지네이션 조회",
+    description="""
+    ## 모든 데이터셋을 페이지네이션으로 조회합니다
+    
+    ### 📊 페이지네이션 파라미터
+    - **page**: 페이지 번호 (1부터 시작, 기본값: 1)
+    - **size**: 페이지당 항목 수 (1-100, 기본값: 10)
+    - **search**: 이름이나 설명으로 검색 (선택 사항)
+    
+    ### 📈 반환 정보
+    - **items**: 데이터셋 목록
+    - **page**: 현재 페이지 번호
+    - **size**: 페이지당 항목 수
+    - **total**: 전체 데이터셋 수
+    - **total_pages**: 전체 페이지 수
+    - **has_next**: 다음 페이지 존재 여부
+    - **has_prev**: 이전 페이지 존재 여부
+    
+    ### 🎯 활용 방법
+    - 프론트엔드 테이블 페이지네이션
+    - 대용량 데이터 효율적 로딩
+    - 검색과 페이지네이션 조합
+    """,
+    responses={
+        200: {
+            "description": "데이터셋 페이지네이션 조회 성공",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "success",
+                        "data": {
+                            "items": [
+                                {
+                                    "id": 1,
+                                    "name": "dataset1",
+                                    "description": "설명",
+                                    "created_at": 1750064190
+                                }
+                            ],
+                            "page": 1,
+                            "size": 10,
+                            "total": 5,
+                            "total_pages": 1,
+                            "has_next": False,
+                            "has_prev": False
+                        },
+                        "message": "데이터셋 목록을 성공적으로 조회했습니다."
+                    }
+                }
+            },
+        }
+    },
 )
-async def get_datasets():
+async def get_datasets_paginated(
+    pagination: PaginationParams = Depends(),
+    search: str = Query(None, description="이름이나 설명으로 검색")
+):
     """
-    저장된 모든 데이터셋의 리스트를 반환합니다.
-    데이터셋이 없으면 빈 리스트가 반환됩니다.
+    모든 데이터셋을 페이지네이션으로 조회합니다.
+    검색어로 필터링도 가능합니다.
     """
-    query = select(datasets)
-    all_datasets = await database.fetch_all(query)
-    return create_success_response(all_datasets, "모든 데이터셋을 성공적으로 조회했습니다.")
+    try:
+        # 기본 쿼리 구성
+        base_query = select(datasets)
+        
+        # 검색 필터링 적용
+        if search:
+            base_query = base_query.where(
+                or_(
+                    datasets.c.name.ilike(f"%{search}%"),
+                    datasets.c.description.ilike(f"%{search}%")
+                )
+            )
+        
+        # 전체 개수 조회
+        count_query = select(func.count()).select_from(
+            base_query.alias()
+        )
+        total = await database.fetch_one(count_query)
+        total_count = total[0] if total else 0
+        
+        # 페이지네이션 적용된 데이터 조회
+        paginated_query = (
+            base_query
+            .order_by(datasets.c.created_at.desc())
+            .limit(pagination.size)
+            .offset((pagination.page - 1) * pagination.size)
+        )
+        
+        items = await database.fetch_all(paginated_query)
+        
+        filter_message = f" (검색: {search})" if search else ""
+        message = f"데이터셋 목록을 성공적으로 조회했습니다{filter_message}."
+        
+        return create_paginated_response(
+            items=items,
+            page=pagination.page,
+            size=pagination.size,
+            total=total_count,
+            message=message
+        )
+        
+    except Exception as e:
+        return create_error_response(f"데이터셋 목록 조회 중 오류가 발생했습니다: {str(e)}")
 
 
 # 특정 데이터셋 삭제
