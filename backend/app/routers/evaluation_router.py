@@ -8,6 +8,8 @@ from sqlalchemy import select, insert
 from datetime import datetime, timezone
 from pydantic import BaseModel
 from typing import List
+from app.schemas.response_schema import ResponseSchema
+from app.utils.response_utils import create_success_response, create_error_response
 
 router = APIRouter(prefix="/evaluations", tags=["Evaluations"])
 
@@ -26,7 +28,6 @@ class EvaluationResult(BaseModel):
 
 @router.post(
     "/run",
-    response_model=EvaluationResult,
     summary="프롬프트 평가 실행 및 결과 저장",
     description="평가 실행 후 결과를 데이터베이스에 저장합니다."
 )
@@ -63,12 +64,16 @@ async def evaluate_prompt(request: EvaluationRequest = Body(...)):
     )
     await database.execute(query)
 
-    return EvaluationResult(
-        metric=request.metric_name,
-        prompt_id=request.prompt_id,
-        dataset_id=request.dataset_id,
-        score=evaluation_score
+    return create_success_response(
+        EvaluationResult(
+            metric=request.metric_name,
+            prompt_id=request.prompt_id,
+            dataset_id=request.dataset_id,
+            score=evaluation_score
+        ),
+        "평가가 성공적으로 완료되었습니다."
     )
+
     
 
 # 평가 결과 조회 스키마
@@ -85,11 +90,14 @@ class EvaluationResultRead(BaseModel):
 
 @router.get(
     "/results",
-    response_model=List[EvaluationResultRead],
     summary="모든 평가 결과 조회",
     description="지금까지 저장된 모든 평가 결과를 조회합니다."
 )
 async def get_all_evaluation_results():
-    query = select(evaluation_results).order_by(evaluation_results.c.created_at.desc())
-    results = await database.fetch_all(query)
-    return results
+    try:
+        query = select(evaluation_results).order_by(evaluation_results.c.created_at.desc())
+        results = await database.fetch_all(query)
+        
+        return create_success_response(results, "평가 결과를 성공적으로 조회했습니다.")
+    except Exception as e:
+        return create_error_response(f"Error: {str(e)}")

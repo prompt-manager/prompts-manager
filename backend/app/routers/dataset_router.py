@@ -3,6 +3,8 @@ from typing import List, Optional
 from app.database import database
 from app.models.dataset_model import datasets
 from app.schemas.dataset_schema import DatasetRead, DatasetUpdate
+from app.schemas.response_schema import ResponseSchema
+from app.utils.response_utils import create_success_response, create_error_response
 from sqlalchemy import select, insert, delete, update, or_
 from datetime import datetime, timezone
 from fastapi.responses import Response, JSONResponse
@@ -13,7 +15,6 @@ router = APIRouter(prefix="/datasets", tags=["Datasets"])
 # CSV 파일을 업로드하여 데이터셋 생성
 @router.post(
     "/",
-    response_model=DatasetRead,
     summary="데이터셋 업로드 (CSV)",
     description="CSV 파일을 업로드하여 새로운 데이터셋을 생성합니다. 데이터셋 이름은 중복될 수 없습니다.",
 )
@@ -71,13 +72,12 @@ async def upload_dataset(
     )
 
     created_dataset = await database.fetch_one(query)
-    return created_dataset
+    return create_success_response(created_dataset, "데이터셋이 성공적으로 생성되었습니다.")
 
 
 # 모든 데이터셋 조회
 @router.get(
     "/",
-    response_model=List[DatasetRead],
     summary="모든 데이터셋 조회",
     description="시스템에 저장된 모든 데이터셋의 목록을 조회합니다.",
 )
@@ -88,7 +88,7 @@ async def get_datasets():
     """
     query = select(datasets)
     all_datasets = await database.fetch_all(query)
-    return all_datasets
+    return create_success_response(all_datasets, "모든 데이터셋을 성공적으로 조회했습니다.")
 
 
 # 특정 데이터셋 삭제
@@ -134,7 +134,6 @@ async def delete_dataset(dataset_id: int):
 
 @router.get(
     "/{dataset_id}",
-    response_model=DatasetRead,
     summary="특정 데이터셋 조회",
     description="데이터셋의 고유 ID로 특정 데이터셋의 상세 정보를 조회합니다.",
 )
@@ -153,12 +152,11 @@ async def get_dataset(dataset_id: int):
     if not dataset:
         raise HTTPException(status_code=404, detail="Dataset not found.")
 
-    return dataset
+    return create_success_response(dataset, "데이터셋을 성공적으로 조회했습니다.")
 
 
 @router.put(
     "/{dataset_id}",
-    response_model=DatasetRead,
     summary="데이터셋 수정",
     description=(
         "데이터셋의 이름과 설명만 수정합니다. CSV 내용 수정은 지원하지 않습니다. "
@@ -227,7 +225,7 @@ async def update_dataset(
 
     updated_dataset = await database.fetch_one(update_query)
 
-    return updated_dataset
+    return create_success_response(updated_dataset, "데이터셋이 성공적으로 수정되었습니다.")
 
 
 @router.get(
@@ -278,7 +276,6 @@ async def download_dataset(dataset_id: int):
 
 @router.get(
     "/search/",
-    response_model=List[DatasetRead],
     summary="데이터셋 검색",
     description="데이터셋의 이름이나 설명에서 키워드를 기준으로 검색합니다."
 )
@@ -292,4 +289,4 @@ async def search_datasets(query: str):
 
     search_results = await database.fetch_all(query_stmt)
 
-    return search_results
+    return create_success_response(search_results, "데이터셋 검색이 성공적으로 완료되었습니다.")

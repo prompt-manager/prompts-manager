@@ -1,8 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.database import database, engine, metadata
 from app.routers import prompt_router, dataset_router, evaluation_router  # 라우터 추가
+from app.schemas.response_schema import ResponseSchema
 
 
 @asynccontextmanager
@@ -38,3 +40,11 @@ app.include_router(evaluation_router.router)
 @app.get("/")
 async def root():
     return {"message": "프롬프트 및 데이터셋 관리 서버 준비 완료!"}
+
+
+@app.exception_handler(HTTPException)
+async def custom_http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=ResponseSchema(data=None, message=exc.detail).model_dump(),
+    )

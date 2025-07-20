@@ -3,6 +3,8 @@ from typing import List
 from app.database import database
 from app.models.prompt_model import prompts
 from app.schemas.prompt_schema import PromptCreate, PromptRead, PromptUpdate
+from app.schemas.response_schema import ResponseSchema
+from app.utils.response_utils import create_success_response, create_error_response
 from sqlalchemy import select, insert, update, delete
 from datetime import datetime, timezone, timedelta
 
@@ -12,7 +14,6 @@ router = APIRouter(prefix="/prompts", tags=["프롬프트 관리"])
 # 프롬프트 추가 (System 필수, User/Assistant 선택)
 @router.post(
     "/",
-    response_model=PromptRead,
     status_code=status.HTTP_201_CREATED,
     tags=["기본 CRUD"],
     summary="🆕 새 프롬프트 생성",
@@ -124,13 +125,12 @@ async def create_prompt(
     )
 
     created_prompt = await database.fetch_one(query)
-    return created_prompt
+    return create_success_response(created_prompt, "프롬프트가 성공적으로 생성되었습니다.")
 
 
 # 특정 프롬프트 조회 (Read) - ID로 조회
 @router.get(
     "/id/{prompt_id}",
-    response_model=PromptRead,
     tags=["기본 CRUD"],
     summary="🔍 ID로 프롬프트 조회",
     description="""
@@ -184,13 +184,12 @@ async def read_prompt(
     prompt = await database.fetch_one(query)
     if not prompt:
         raise HTTPException(status_code=404, detail="Prompt not found")
-    return prompt
+    return create_success_response(prompt, "프롬프트를 성공적으로 조회했습니다.")
 
 
 # 특정 노드를 기준으로 프롬프트 조회 (모든 버전 조회)
 @router.get(
     "/node/{node_name}",
-    response_model=List[PromptRead],
     tags=["노드 관리"],
     summary="📦 노드별 모든 프롬프트 조회",
     description="""
@@ -257,13 +256,12 @@ async def read_prompts_by_node(
         .order_by(prompts.c.version.desc())
     )
     result = await database.fetch_all(query)
-    return result
+    return create_success_response(result, "노드의 프롬프트 목록을 성공적으로 조회했습니다.")
 
 
 # 프롬프트 수정 (Update)
 @router.put(
     "/id/{prompt_id}",
-    response_model=PromptRead,
     tags=["기본 CRUD"],
     summary="✏️ 프롬프트 수정",
     description="""
@@ -385,7 +383,7 @@ async def update_prompt(
     )
 
     updated_prompt = await database.fetch_one(update_query)
-    return updated_prompt
+    return create_success_response(updated_prompt, "프롬프트가 성공적으로 수정되었습니다.")
 
 
 # 프롬프트 삭제 (Delete)
@@ -442,13 +440,12 @@ async def delete_prompt(
     # 프롬프트 삭제
     await database.execute(delete(prompts).where(prompts.c.id == prompt_id))
 
-    return {"detail": f"Prompt with id {prompt_id} has been deleted."}
+    return create_success_response({"detail": f"Prompt with id {prompt_id} has been deleted."}, "프롬프트가 성공적으로 삭제되었습니다.")
 
 
 # 특정 프롬프트를 프로덕션으로 설정 (다른 버전은 비프로덕션으로 처리)
 @router.post(
     "/{prompt_id}/production",
-    response_model=PromptRead,
     tags=["프로덕션 관리"],
     summary="🚀 프로덕션 배포",
     description="""
@@ -528,7 +525,7 @@ async def set_production_prompt(
     )
     activated_prompt = await database.fetch_one(activate_query)
 
-    return activated_prompt
+    return create_success_response(activated_prompt, "프롬프트가 성공적으로 프로덕션으로 배포되었습니다.")
 
 
 # 프롬프트 개수 조회
@@ -565,7 +562,7 @@ async def count_prompts_by_node_name(
     query = select(prompts).where(prompts.c.node_name == node_name)
     result = await database.fetch_all(query)
     count = len(result)
-    return {"node_name": node_name, "count": count}
+    return create_success_response({"node_name": node_name, "count": count}, "프롬프트 개수를 성공적으로 조회했습니다.")
 
 
 @router.delete(
@@ -611,13 +608,12 @@ async def delete_prompts_by_node_name(
 ):
     query = delete(prompts).where(prompts.c.node_name == node_name)
     result = await database.execute(query)
-    return {"detail": f"All prompts with node_name '{node_name}' deleted."}
+    return create_success_response({"detail": f"All prompts with node_name '{node_name}' deleted."}, "노드의 모든 프롬프트가 성공적으로 삭제되었습니다.")
 
 
 # 특정 버전의 프롬프트 조회
 @router.get(
     "/node/{node_name}/version/{version}",
-    response_model=PromptRead,
     tags=["버전 관리"],
     summary="🔢 특정 버전 프롬프트 조회",
     description="""
@@ -674,7 +670,7 @@ async def read_prompt_by_version(
     prompt = await database.fetch_one(query)
     if not prompt:
         raise HTTPException(status_code=404, detail="Prompt version not found")
-    return prompt
+    return create_success_response(prompt, "특정 버전의 프롬프트를 성공적으로 조회했습니다.")
 
 
 # 특정 버전의 프롬프트 삭제
@@ -748,15 +744,14 @@ async def delete_prompt_by_version(
     )
     await database.execute(delete_query)
 
-    return {
+    return create_success_response({
         "detail": f"Prompt with node '{node_name}' and version '{version}' has been deleted."
-    }
+    }, "특정 버전의 프롬프트가 성공적으로 삭제되었습니다.")
 
 
 # 특정 노드의 특정 버전 프롬프트 수정
 @router.put(
     "/node/{node_name}/version/{version}",
-    response_model=PromptRead,
     status_code=status.HTTP_200_OK,
     tags=["기본 CRUD"],
     summary="✏️ 특정 노드의 특정 버전 프롬프트 수정",
@@ -855,4 +850,4 @@ async def update_prompt_by_version(
     )
 
     updated_prompt = await database.fetch_one(update_query)
-    return updated_prompt
+    return create_success_response(updated_prompt, "특정 버전의 프롬프트가 성공적으로 수정되었습니다.")
