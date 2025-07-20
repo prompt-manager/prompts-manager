@@ -31,7 +31,7 @@ class EvaluationResult(BaseModel):
     "/run",
     tags=["🧪 3. 평가 관리"],
     summary="🚀 프롬프트 평가 실행 및 결과 저장",
-    description="평가 실행 후 결과를 데이터베이스에 저장합니다."
+    description="프롬프트와 데이터셋으로 평가를 실행하고 결과를 저장합니다.",
 )
 async def evaluate_prompt(request: EvaluationRequest = Body(...)):
     # 프롬프트 조회
@@ -94,29 +94,7 @@ class EvaluationResultRead(BaseModel):
     "/results",
     tags=["📋 4. 조회 및 검색"],
     summary="📋 모든 평가 결과 페이지네이션 조회",
-    description="""
-    ## 모든 평가 결과를 페이지네이션으로 조회합니다
-    
-    ### 📊 페이지네이션 파라미터
-    - **page**: 페이지 번호 (1부터 시작, 기본값: 1)
-    - **size**: 페이지당 항목 수 (1-100, 기본값: 10)
-    - **metric_name**: 평가 지표로 필터링 (선택 사항)
-    - **prompt_id**: 특정 프롬프트로 필터링 (선택 사항)
-    
-    ### 📈 반환 정보
-    - **items**: 평가 결과 목록
-    - **page**: 현재 페이지 번호
-    - **size**: 페이지당 항목 수
-    - **total**: 전체 평가 결과 수
-    - **total_pages**: 전체 페이지 수
-    - **has_next**: 다음 페이지 존재 여부
-    - **has_prev**: 이전 페이지 존재 여부
-    
-    ### 🎯 활용 방법
-    - 프론트엔드 테이블 페이지네이션
-    - 평가 이력 효율적 관리
-    - 지표별, 프롬프트별 필터링
-    """,
+    description="페이지네이션으로 평가 결과를 조회합니다. metric_name과 prompt_id로 필터링 가능합니다.",
     responses={
         200: {
             "description": "평가 결과 페이지네이션 조회 성공",

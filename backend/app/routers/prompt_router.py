@@ -18,28 +18,7 @@ router = APIRouter(prefix="/prompts", tags=["📝 1. 프롬프트 관리"])
     "/",
     tags=["📋 4. 조회 및 검색"],
     summary="📋 모든 프롬프트 페이지네이션 조회",
-    description="""
-    ## 모든 프롬프트를 페이지네이션으로 조회합니다
-    
-    ### 📊 페이지네이션 파라미터
-    - **page**: 페이지 번호 (1부터 시작, 기본값: 1)
-    - **size**: 페이지당 항목 수 (1-100, 기본값: 10)
-    - **node_name**: 특정 노드로 필터링 (선택 사항)
-    
-    ### 📈 반환 정보
-    - **items**: 프롬프트 목록
-    - **page**: 현재 페이지 번호
-    - **size**: 페이지당 항목 수
-    - **total**: 전체 프롬프트 수
-    - **total_pages**: 전체 페이지 수
-    - **has_next**: 다음 페이지 존재 여부
-    - **has_prev**: 이전 페이지 존재 여부
-    
-    ### 🎯 활용 방법
-    - 프론트엔드 테이블 페이지네이션
-    - 대용량 데이터 효율적 로딩
-    - 노드별 필터링과 페이지네이션 조합
-    """,
+    description="페이지네이션으로 프롬프트 목록을 조회합니다. node_name으로 필터링 가능합니다.",
     responses={
         200: {
             "description": "프롬프트 페이지네이션 조회 성공",
@@ -73,7 +52,7 @@ router = APIRouter(prefix="/prompts", tags=["📝 1. 프롬프트 관리"])
 )
 async def get_prompts_paginated(
     pagination: PaginationParams = Depends(),
-    node_name: str = Query(None, description="노드 이름으로 필터링")
+    node_name: str = Query(None, description="특정 노드로 필터링")
 ):
     """
     모든 프롬프트를 페이지네이션으로 조회합니다.
@@ -119,29 +98,13 @@ async def get_prompts_paginated(
         return create_error_response(f"프롬프트 목록 조회 중 오류가 발생했습니다: {str(e)}")
 
 
-# 프롬프트 추가 (System 필수, User/Assistant 선택)
+# 새 프롬프트 생성
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
     tags=["📝 1. 프롬프트 관리"],
     summary="🆕 새 프롬프트 생성",
-    description="""
-    ## 새로운 프롬프트를 생성합니다
-    
-    ### 📋 필수 사항
-    - **System 메시지**: 반드시 포함되어야 합니다
-    - **Node Name**: 프롬프트가 속할 노드 이름
-    
-    ### 🔧 선택 사항
-    - **User 메시지**: 사용자 입력 예시
-    - **Assistant 메시지**: 어시스턴트 응답 예시  
-    - **Message**: 프롬프트에 대한 설명이나 메모
-    
-    ### ⚙️ 자동 처리
-    - **Version**: 자동으로 증가 (같은 노드 내에서)
-    - **Production**: 기본값 `false`
-    - **생성/수정 시간**: UTC 기준 자동 설정
-    """,
+    description="새로운 프롬프트를 생성합니다. node_name과 content는 필수입니다.",
     responses={
         201: {
             "description": "프롬프트가 성공적으로 생성됨",
@@ -236,23 +199,12 @@ async def create_prompt(
     return create_success_response(created_prompt, "프롬프트가 성공적으로 생성되었습니다.")
 
 
-# 특정 프롬프트 조회 (Read) - ID로 조회
+# ID로 프롬프트 조회
 @router.get(
     "/id/{prompt_id}",
     tags=["📝 1. 프롬프트 관리"],
     summary="🔍 ID로 프롬프트 조회",
-    description="""
-    ## 고유 ID로 특정 프롬프트를 조회합니다
-    
-    ### 📌 사용 시나리오
-    - 특정 프롬프트의 상세 정보가 필요할 때
-    - 프롬프트 수정 전 현재 상태 확인
-    - 프로덕션 상태나 버전 정보 확인
-    
-    ### 💡 팁
-    - ID는 데이터베이스에서 자동 생성되는 고유 값입니다
-    - 다른 API에서 반환된 프롬프트의 ID를 사용하세요
-    """,
+    description="프롬프트 ID로 특정 프롬프트의 상세 정보를 조회합니다.",
     responses={
         200: {
             "description": "프롬프트 조회 성공",
@@ -295,28 +247,12 @@ async def read_prompt(
     return create_success_response(prompt, "프롬프트를 성공적으로 조회했습니다.")
 
 
-# 특정 노드를 기준으로 프롬프트 조회 (모든 버전 조회)
+# 노드별 모든 프롬프트 조회
 @router.get(
     "/node/{node_name}",
     tags=["📋 4. 조회 및 검색"],
     summary="📦 노드별 모든 프롬프트 조회",
-    description="""
-    ## 특정 노드의 모든 프롬프트 버전을 조회합니다
-    
-    ### 📊 반환 정보
-    - 해당 노드의 **모든 버전** 프롬프트
-    - **최신순으로 정렬**되어 반환
-    - 각 프롬프트의 프로덕션 상태 포함
-    
-    ### 🎯 활용 방법
-    - 노드의 프롬프트 히스토리 확인
-    - 버전별 변경사항 추적
-    - 프로덕션 버전과 개발 버전 비교
-    
-    ### 📝 참고사항
-    - 빈 배열이 반환되면 해당 노드에 프롬프트가 없음을 의미합니다
-    - 대소문자를 구분하므로 정확한 노드명을 입력해주세요
-    """,
+    description="특정 노드에 속한 모든 프롬프트를 조회합니다.",
     responses={
         200: {
             "description": "노드의 모든 프롬프트 목록",
@@ -367,29 +303,12 @@ async def read_prompts_by_node(
     return create_success_response(result, "노드의 프롬프트 목록을 성공적으로 조회했습니다.")
 
 
-# 프롬프트 수정 (Update)
+# 프롬프트 수정
 @router.put(
     "/id/{prompt_id}",
     tags=["📝 1. 프롬프트 관리"],
     summary="✏️ 프롬프트 수정",
-    description="""
-    ## 기존 프롬프트를 수정합니다
-    
-    ### 🔄 수정 가능한 필드
-    - **Content**: System/User/Assistant 메시지
-    - **Message**: 프롬프트 설명이나 메모
-    - **Production**: 프로덕션 상태
-    - **Node Name**: 소속 노드 (신중히 변경)
-    
-    ### ⚠️ 주의사항
-    - **부분 업데이트**: 변경하고 싶은 필드만 포함하세요
-    - **Version**: 수정 시에도 버전은 변경되지 않습니다
-    - **Updated At**: 자동으로 현재 시간(UTC)으로 갱신됩니다
-    
-    ### 💡 베스트 프랙티스
-    - 프로덕션 중인 프롬프트 수정 시 주의하세요
-    - 중요한 변경사항은 새 버전 생성을 고려하세요
-    """,
+    description="기존 프롬프트를 수정합니다. node_name과 version은 수정할 수 없습니다.",
     responses={
         200: {
             "description": "프롬프트 수정 성공",
@@ -494,29 +413,13 @@ async def update_prompt(
     return create_success_response(updated_prompt, "프롬프트가 성공적으로 수정되었습니다.")
 
 
-# 프롬프트 삭제 (Delete)
+# 프롬프트 삭제
 @router.delete(
     "/id/{prompt_id}",
     status_code=status.HTTP_200_OK,
     tags=["📝 1. 프롬프트 관리"],
     summary="🗑️ 프롬프트 삭제",
-    description="""
-    ## 특정 프롬프트를 영구적으로 삭제합니다
-    
-    ### ⚠️ 경고
-    - **되돌릴 수 없는 작업**입니다
-    - 삭제된 프롬프트는 복구할 수 없습니다
-    - 프로덕션 중인 프롬프트 삭제 시 서비스에 영향을 줄 수 있습니다
-    
-    ### 🛡️ 권장사항
-    - 프로덕션 프롬프트 삭제 전 백업 확인
-    - 팀원들과 삭제 여부 사전 협의
-    - 대안 프롬프트 준비 후 삭제 수행
-    
-    ### 💡 대안
-    - 삭제 대신 `production: false`로 비활성화 고려
-    - 새 버전 생성으로 점진적 전환 권장
-    """,
+    description="프롬프트 ID로 특정 프롬프트를 영구 삭제합니다.",
     responses={
         200: {
             "description": "프롬프트 삭제 성공",
@@ -551,30 +454,12 @@ async def delete_prompt(
     return create_success_response({"detail": f"Prompt with id {prompt_id} has been deleted."}, "프롬프트가 성공적으로 삭제되었습니다.")
 
 
-# 특정 프롬프트를 프로덕션으로 설정 (다른 버전은 비프로덕션으로 처리)
+# 프로덕션 배포
 @router.post(
     "/{prompt_id}/production",
     tags=["⚙️ 5. 고급 관리"],
     summary="🚀 프로덕션 배포",
-    description="""
-    ## 특정 프롬프트를 프로덕션으로 배포합니다
-    
-    ### 🔄 자동 처리 사항
-    - **대상 프롬프트**: `production: true`로 설정
-    - **동일 노드의 다른 프롬프트**: `production: false`로 자동 변경
-    - **배포 시점**: 즉시 적용
-    
-    ### 📋 배포 전 체크리스트
-    - [ ] 프롬프트 내용 최종 검토 완료
-    - [ ] 테스트 환경에서 정상 동작 확인
-    - [ ] 팀 리뷰 및 승인 완료
-    - [ ] 백업 프롬프트 준비 완료
-    
-    ### 🎯 사용 시나리오
-    - 새 버전의 프롬프트를 라이브 서비스에 적용
-    - A/B 테스트를 위한 프롬프트 전환
-    - 긴급 핫픽스 프롬프트 배포
-    """,
+    description="특정 프롬프트를 프로덕션 환경에 배포합니다.",
     responses={
         200: {
             "description": "프로덕션 배포 성공",
@@ -641,25 +526,7 @@ async def set_production_prompt(
     "/nodes",
     tags=["📋 4. 조회 및 검색"],
     summary="📋 모든 노드 목록 조회",
-    description="""
-    ## 시스템에 등록된 모든 노드의 목록을 조회합니다
-    
-    ### 📊 반환 정보
-    - **노드 이름**: 각 노드의 고유 이름
-    - **프롬프트 개수**: 해당 노드의 총 프롬프트 수
-    - **프로덕션 프롬프트 ID**: 현재 프로덕션 상태인 프롬프트 ID (없으면 null)
-    - **최신 버전**: 해당 노드의 최신 프롬프트 버전 번호
-    
-    ### 🎯 활용 방법
-    - 시스템 전체 노드 현황 파악
-    - 프론트엔드 노드 선택 드롭다운용 데이터
-    - 노드별 관리 상태 모니터링
-    - 대시보드 통계 정보 제공
-    
-    ### 💡 참고
-    - 프롬프트가 없는 노드는 목록에 나타나지 않습니다
-    - 노드 이름 순으로 정렬되어 반환됩니다
-    """,
+    description="프롬프트 개수, 프로덕션 ID, 최신 버전 등 노드 정보를 조회합니다.",
     responses={
         200: {
             "description": "노드 목록 조회 성공",
@@ -727,23 +594,12 @@ async def get_all_nodes():
         return create_error_response(f"노드 목록 조회 중 오류가 발생했습니다: {str(e)}")
 
 
-# 프롬프트 개수 조회
+# 노드별 프롬프트 개수 조회
 @router.get(
     "/count/{node_name}",
     tags=["📋 4. 조회 및 검색"],
     summary="📊 노드별 프롬프트 개수",
-    description="""
-    ## 특정 노드의 프롬프트 총 개수를 조회합니다
-    
-    ### 📈 활용 방법
-    - 노드별 프롬프트 관리 현황 파악
-    - 버전 히스토리 규모 확인
-    - 리소스 사용량 모니터링
-    
-    ### 💡 참고
-    - 모든 버전(프로덕션/비프로덕션)을 포함한 총 개수
-    - 실시간 정확한 카운트 제공
-    """,
+    description="특정 노드에 속한 프롬프트 개수를 조회합니다.",
     responses={
         200: {
             "description": "프롬프트 개수 조회 성공",
@@ -768,25 +624,7 @@ async def count_prompts_by_node_name(
     "/delete-all/{node_name}",
     tags=["⚙️ 5. 고급 관리"],
     summary="💣 노드 전체 삭제",
-    description="""
-    ## ⚠️ 위험: 노드의 모든 프롬프트를 삭제합니다
-    
-    ### 🚨 경고사항
-    - **모든 버전**의 프롬프트가 삭제됩니다
-    - **되돌릴 수 없는** 작업입니다
-    - **프로덕션 서비스**에 영향을 줄 수 있습니다
-    
-    ### 🛡️ 안전 절차
-    1. **백업 확인**: 중요한 프롬프트 백업
-    2. **팀 승인**: 관련 팀원들과 협의
-    3. **서비스 점검**: 해당 노드 사용 서비스 확인
-    4. **대체 방안**: 필요 시 대체 프롬프트 준비
-    
-    ### 🎯 사용 시나리오
-    - 테스트 노드 정리
-    - 프로젝트 종료 후 리소스 정리
-    - 실수로 생성된 노드 제거
-    """,
+    description="⚠️ 주의: 특정 노드의 모든 프롬프트를 영구 삭제합니다.",
     responses={
         200: {
             "description": "노드의 모든 프롬프트 삭제 성공",
@@ -810,29 +648,12 @@ async def delete_prompts_by_node_name(
     return create_success_response({"detail": f"All prompts with node_name '{node_name}' deleted."}, "노드의 모든 프롬프트가 성공적으로 삭제되었습니다.")
 
 
-# 특정 버전의 프롬프트 조회
+# 특정 버전 프롬프트 조회
 @router.get(
     "/node/{node_name}/version/{version}",
     tags=["⚙️ 5. 고급 관리"],
     summary="🔢 특정 버전 프롬프트 조회",
-    description="""
-    ## 노드의 특정 버전 프롬프트를 조회합니다
-    
-    ### 🎯 사용 목적
-    - **버전별 비교**: 이전 버전과 현재 버전 비교
-    - **롤백 준비**: 이전 버전으로 되돌리기 전 내용 확인
-    - **히스토리 추적**: 특정 시점의 프롬프트 상태 확인
-    
-    ### 📋 버전 정보
-    - 버전은 1부터 시작하여 순차적으로 증가
-    - 같은 노드 내에서만 버전 번호가 의미를 가짐
-    - 삭제된 버전은 조회할 수 없음
-    
-    ### 💡 활용 팁
-    - 프로덕션 이슈 발생 시 이전 버전 확인
-    - 프롬프트 변경 이력 추적
-    - 특정 버전의 성능 분석
-    """,
+    description="노드명과 버전으로 특정 버전의 프롬프트를 조회합니다.",
     responses={
         200: {
             "description": "특정 버전 프롬프트 조회 성공",
@@ -872,30 +693,13 @@ async def read_prompt_by_version(
     return create_success_response(prompt, "특정 버전의 프롬프트를 성공적으로 조회했습니다.")
 
 
-# 특정 버전의 프롬프트 삭제
+# 특정 버전 삭제
 @router.delete(
     "/node/{node_name}/version/{version}",
     status_code=status.HTTP_200_OK,
     tags=["⚙️ 5. 고급 관리"],
     summary="🗑️ 특정 버전 삭제",
-    description="""
-    ## 노드의 특정 버전 프롬프트를 삭제합니다
-    
-    ### ⚠️ 삭제 전 확인사항
-    - **프로덕션 상태**: 프로덕션 중인 버전 삭제 주의
-    - **의존성**: 해당 버전을 참조하는 서비스 확인
-    - **백업**: 중요한 버전은 삭제 전 백업
-    
-    ### 🎯 일반적인 사용 사례
-    - 테스트용 버전 정리
-    - 잘못 생성된 버전 제거  
-    - 불필요한 구버전 정리
-    - 보안 이슈가 있는 버전 즉시 제거
-    
-    ### 💡 대체 방안
-    - 삭제 대신 `production: false` 설정 고려
-    - 중요한 버전은 메시지에 '사용 중단' 표시
-    """,
+    description="노드의 특정 버전 프롬프트만 삭제합니다.",
     responses={
         200: {
             "description": "특정 버전 삭제 성공",
@@ -948,26 +752,13 @@ async def delete_prompt_by_version(
     }, "특정 버전의 프롬프트가 성공적으로 삭제되었습니다.")
 
 
-# 특정 노드의 특정 버전 프롬프트 수정
+# 특정 버전 프롬프트 수정
 @router.put(
     "/node/{node_name}/version/{version}",
     status_code=status.HTTP_200_OK,
     tags=["⚙️ 5. 고급 관리"],
     summary="✏️ 특정 노드의 특정 버전 프롬프트 수정",
-    description="""
-    ## 특정 노드의 특정 버전 프롬프트를 수정합니다
-    
-    ### 📋 필수 사항
-    - **Node Name**: 수정할 프롬프트의 노드 이름
-    - **Version**: 수정할 프롬프트의 버전 번호
-    
-    ### 🔧 수정 가능 항목
-    - **Content**: 프롬프트 내용 (system, user, assistant)
-    - **Message**: 프롬프트 설명이나 메모
-    
-    ### ⚙️ 자동 처리
-    - **Updated At**: UTC 기준 자동 업데이트
-    """,
+    description="노드명과 버전으로 특정 프롬프트를 수정합니다.",
     responses={
         200: {
             "description": "프롬프트가 성공적으로 수정됨",
