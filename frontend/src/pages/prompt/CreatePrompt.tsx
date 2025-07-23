@@ -1,40 +1,81 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import CreatePromptForm from './components/form/CreatePromptForm'
-import { Button, Layout } from '../../components'
+import { Button, Form, Layout } from '../../components'
 import { S_FlexWrapper } from '../styles/Page.style'
 import { message } from 'antd'
+import { postPrompts } from '../../api/service/apiService'
 
 const CreatePrompt = () => {
-    const [messageApi, contextHolder] = message.useMessage()
+  const [form] = Form.useForm()
+  const [messageApi, contextHolder] = message.useMessage()
 
-    const handleCreatePrompt = () => {
-        // Create
+  const [promptOrder, setPromptOrder] = useState<('user' | 'assistant')[]>(['user', 'assistant'])
+
+  const handleCreatePrompt = async () => {
+    try {
+      const { node_name, system, user, assistant, message } = await form.validateFields()
+
+      const getPromptField = (role: 'user' | 'assistant', value: string | undefined) => {
+        const trimmed = value?.trim()
+        return {
+          order: trimmed ? promptOrder.findIndex((p) => p === role) + 2 : null,
+          prompt: trimmed || null,
+        }
+      }
+      const parameter = {
+        node_name,
+        content: {
+          system: {
+            order: 1,
+            prompt: system,
+          },
+          user: getPromptField('user', user),
+          assistant: getPromptField('assistant', assistant),
+        },
+        message: message?.trim() || null,
+      }
+
+      const response = await postPrompts(parameter)
+
+      if (response.status) {
         messageApi.open({
-            type: 'success',
-            content: 'Create Successfully.',
+          type: 'success',
+          content: 'Create Successfully.',
         })
-        // messageApi.open({
-        //     type: 'error',
-        //     content: 'Creation failed.',
-        // })
-    }
+      } else {
+        messageApi.open({
+          type: 'error',
+          content: 'Creation failed.',
+        })
+      }
 
-    return (
-        <>
-            {contextHolder}
-            <Layout
-                menuKey="prompt/create"
-                headerTitle={<span>Create Prompt</span>}
-            >
-                <S_FlexWrapper flexDirection="column" gap={16}>
-                    <CreatePromptForm />
-                    <Button type="primary" onClick={handleCreatePrompt}>
-                        Create prompt
-                    </Button>
-                </S_FlexWrapper>
-            </Layout>
-        </>
-    )
+      console.log('#parameter', parameter)
+    } catch (e) {
+      console.error('[ERROR] Create Prompt', e)
+    }
+  }
+
+  const handleChangePromptOrder = () => {
+    setPromptOrder((prev) => [...prev].reverse())
+  }
+
+  return (
+    <>
+      {contextHolder}
+      <Layout menuKey="prompt/create" headerTitle={<span>Create Prompt</span>}>
+        <S_FlexWrapper flexDirection="column" gap={16}>
+          <CreatePromptForm
+            form={form}
+            promptOrder={promptOrder}
+            onChangePromptOrder={handleChangePromptOrder}
+          />
+          <Button type="primary" onClick={handleCreatePrompt}>
+            Create prompt
+          </Button>
+        </S_FlexWrapper>
+      </Layout>
+    </>
+  )
 }
 
 export default CreatePrompt

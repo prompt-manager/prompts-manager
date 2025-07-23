@@ -1,149 +1,79 @@
-import React from 'react'
-import {
-    Form,
-    Select,
-    TextArea,
-    Button,
-    Input,
-    Tooltip,
-} from '../../../../components'
-import {
-    S_Helper,
-    S_FlexWrapper,
-    S_ChangeButton,
-} from '../../../styles/Page.style'
-import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons'
+import React, { useEffect, useState } from 'react'
+import { Form, Select, TextArea, Input, Tooltip } from '../../../../components'
+import { S_Helper, S_ChangeButton } from '../../../styles/Page.style'
+import { getPromptsNodes } from '../../../../api/service/apiService'
+import { SelectOption } from '../../../../types/common'
 
-const CreatePromptForm = () => {
-    const [form] = Form.useForm()
+interface CreatePromptFormProps {
+  form: any
+  promptOrder: ('user' | 'assistant')[]
+  onChangePromptOrder: () => void
+}
 
-    const promptTypeOptions = [
-        { label: 'User', value: 'user' },
-        { label: 'Assistant', value: 'assistant' },
-    ]
+const CreatePromptForm = ({ form, promptOrder, onChangePromptOrder }: CreatePromptFormProps) => {
+  const [nodeOptions, setNodeOptions] = useState<SelectOption[]>([])
 
-    const moveField = (from: number, to: number) => {
-        const current = form.getFieldValue('prompt')
-        if (to < 0 || to >= current.length) return
+  const fetchPromptsNodes = async () => {
+    const response = await getPromptsNodes()
 
-        const updated = [...current]
-        const [moved] = updated.splice(from, 1)
-        updated.splice(to, 0, moved)
-        form.setFieldsValue({ prompt: updated })
+    if (response.status) {
+      const options = response.data.map((res) => ({
+        label: res.node_name,
+        value: res.node_name,
+      }))
+
+      setNodeOptions(options)
     }
+  }
 
-    return (
-        <Form form={form} layout="vertical">
-            <Form.Item label="Node Name" name="node" width="100%" required>
-                <Select placeholder="Select a node name" />
-            </Form.Item>
-            <Form.Item label="Prompt" name="prompt" required width="100%">
-                <Form.List name="prompt">
-                    {(fields, { add, remove }) => (
-                        <>
-                            <Form.Item name="system">
-                                <Input
-                                    prefix="System :"
-                                    placeholder="Enter a prompt here."
-                                />
-                            </Form.Item>
-                            {fields.map(
-                                ({ key, name, ...restField }, index) => (
-                                    <>
-                                        <S_FlexWrapper
-                                            width="100%"
-                                            alignItems="center"
-                                        >
-                                            <Form.Item
-                                                {...restField}
-                                                name={[name, 'type']}
-                                            >
-                                                <Select
-                                                    options={promptTypeOptions}
-                                                    width="10rem"
-                                                />
-                                            </Form.Item>
-                                            <Form.Item
-                                                width="100%"
-                                                {...restField}
-                                                name={[name, 'prompt']}
-                                            >
-                                                <Input
-                                                    placeholder="Enter a prompt here."
-                                                    suffix={
-                                                        fields.length > 1 && (
-                                                            <S_ChangeButton
-                                                                style={{
-                                                                    cursor: 'pointer',
-                                                                }}
-                                                                onClick={() => {
-                                                                    if (
-                                                                        index ===
-                                                                        0
-                                                                    ) {
-                                                                        moveField(
-                                                                            index,
-                                                                            index +
-                                                                                1,
-                                                                        )
-                                                                    } else {
-                                                                        moveField(
-                                                                            index,
-                                                                            index -
-                                                                                1,
-                                                                        )
-                                                                    }
-                                                                }}
-                                                            >
-                                                                <Tooltip title="Change order">
-                                                                    ⇅
-                                                                </Tooltip>
-                                                            </S_ChangeButton>
-                                                        )
-                                                    }
-                                                />
-                                            </Form.Item>
-                                            <Form.Item>
-                                                <Button
-                                                    type="text"
-                                                    onClick={() => remove(name)}
-                                                >
-                                                    <Tooltip title="Remove">
-                                                        <MinusCircleOutlined />
-                                                    </Tooltip>
-                                                </Button>
-                                            </Form.Item>
-                                        </S_FlexWrapper>
-                                    </>
-                                ),
-                            )}
-                            <Form.Item width="100%">
-                                <Button
-                                    extendedSize
-                                    onClick={() => add({ type: 'user' })}
-                                    disabled={fields.length > 1}
-                                >
-                                    <PlusCircleOutlined />
-                                    Add message
-                                </Button>
-                            </Form.Item>
-                        </>
-                    )}
-                </Form.List>
-            </Form.Item>
-            <Form.Item label="Commit message (Optional)" name="commitMessage">
-                <S_Helper>
-                    Provide information about the changed made in this version.
-                    Helps maintain a clear history of prompt iterations.
-                </S_Helper>
-                <TextArea
-                    height={80}
-                    resize={false}
-                    placeholder="Add commit message..."
-                />
-            </Form.Item>
-        </Form>
-    )
+  useEffect(() => {
+    fetchPromptsNodes()
+  }, [])
+
+  return (
+    <Form form={form} layout="vertical">
+      <Form.Item
+        label="Node Name"
+        name="node_name"
+        width="100%"
+        rules={[{ required: true, message: 'Please select node name!' }]}
+      >
+        <Select placeholder="Select a node name" options={nodeOptions} />
+      </Form.Item>
+      <Form.Item
+        name="system"
+        label="System"
+        rules={[{ required: true, message: 'Please input system prompt!' }]}
+      >
+        <Input placeholder="Enter a system prompt here." />
+      </Form.Item>
+      {promptOrder?.map((role) => (
+        <Form.Item
+          key={role}
+          name={role}
+          label={`${role[0].toUpperCase() + role.slice(1)} (Optional)`}
+        >
+          <Input
+            placeholder={`Enter a ${role} prompt here.`}
+            suffix={
+              <S_ChangeButton onClick={onChangePromptOrder}>
+                <Tooltip title="Change order">⇅</Tooltip>
+              </S_ChangeButton>
+            }
+          />
+        </Form.Item>
+      ))}
+      <Form.Item label="Commit message (Optional)">
+        <S_Helper>
+          Provide information about the changed made in this version. Helps maintain a clear history
+          of prompt iterations.
+        </S_Helper>
+        <Form.Item name="message">
+          <TextArea height={80} resize={false} placeholder="Add commit message..." />
+        </Form.Item>
+      </Form.Item>
+    </Form>
+  )
 }
 
 export default CreatePromptForm
