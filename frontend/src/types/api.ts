@@ -54,3 +54,11 @@ export interface ExecutePromptReq {
     prompt_id: number | string
     question: string
 }
+
+export interface DatasetsList {
+    id: string | number
+    content: string
+    name: string
+    description: string
+    created_at: string
+}
