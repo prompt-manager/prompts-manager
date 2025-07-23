@@ -50,7 +50,7 @@ async def evaluate_prompt(request: EvaluationRequest = Body(...)):
     try:
         evaluation_score = run_evaluation(
             request.metric_name,
-            prompt_content=prompt.content["system"],  
+            prompt_content=prompt.content["system"]["prompt"],  
             dataset_content=dataset.content
         )
     except ValueError as e:

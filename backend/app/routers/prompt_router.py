@@ -31,7 +31,11 @@ router = APIRouter(prefix="/prompts", tags=["📝 1. 프롬프트 관리"])
                                 {
                                     "id": 1,
                                     "node_name": "검색노드",
-                                    "content": {"system": "검색 어시스턴트"},
+                                    "content": {
+                                        "system": {"order": 1, "prompt": "검색 어시스턴트"},
+                                        "user": {"order": 2, "prompt": "오늘 날씨 어때?"},
+                                        "assistant": {"order": None, "prompt": None}
+                                    },
                                     "production": True,
                                     "version": 1
                                 }
@@ -114,7 +118,12 @@ async def get_prompts_paginated(
                         "id": 1,
                         "node_name": "검색노드",
                         "content": {
-                            "system": "당신은 검색을 도와주는 어시스턴트입니다."
+                            "system": {
+                                "order": 1,
+                                "prompt": "당신은 검색을 도와주는 어시스턴트입니다."
+                            },
+                            "user": {"order": 2, "prompt": None},
+                            "assistant": {"order": None, "prompt": None}
                         },
                         "message": "검색 기능 프롬프트 v1.0",
                         "production": False,
@@ -145,7 +154,12 @@ async def create_prompt(
                 "value": {
                     "node_name": "검색노드",
                     "content": {
-                        "system": "당신은 질문에 답변하고 작업을 도와줄 수 있는 도움이 되는 어시스턴트입니다."
+                        "system": {
+                            "order": 1,
+                            "prompt": "당신은 질문에 답변하고 작업을 도와줄 수 있는 도움이 되는 어시스턴트입니다."
+                        },
+                        "user": {"order": 2, "prompt": None},
+                        "assistant": {"order": None, "prompt": None}
                     },
                 },
             },
@@ -155,9 +169,18 @@ async def create_prompt(
                 "value": {
                     "node_name": "요약노드",
                     "content": {
-                        "system": "당신은 제공된 텍스트를 간결하게 요약하는 전문 어시스턴트입니다.",
-                        "user": "이 보고서는 최신 시장 동향을 분석하고 있으며, 주요 경쟁사의 전략과 소비자 행동 변화에 초점을 맞추고 있습니다.",
-                        "assistant": "보고서는 시장 동향, 경쟁사 전략, 소비자 행동 변화를 분석합니다.",
+                        "system": {
+                            "order": 1,
+                            "prompt": "당신은 제공된 텍스트를 간결하게 요약하는 전문 어시스턴트입니다."
+                        },
+                        "user": {
+                            "order": 2,
+                            "prompt": "이 보고서는 최신 시장 동향을 분석하고 있으며, 주요 경쟁사의 전략과 소비자 행동 변화에 초점을 맞추고 있습니다."
+                        },
+                        "assistant": {
+                            "order": 3,
+                            "prompt": "보고서는 시장 동향, 경쟁사 전략, 소비자 행동 변화를 분석합니다."
+                        }
                     },
                     "message": "📊 요약 노드의 신규 버전 프롬프트 - 더 간결한 요약을 위해 개선",
                 },
@@ -165,7 +188,7 @@ async def create_prompt(
         },
     ),
 ):
-    if not prompt.content.system.strip():
+    if not prompt.content.system.prompt or not prompt.content.system.prompt.strip():
         raise HTTPException(status_code=400, detail="System prompt is required.")
 
     # 현재 가장 최신 버전 조회
@@ -214,9 +237,9 @@ async def create_prompt(
                         "id": 1,
                         "node_name": "검색노드",
                         "content": {
-                            "system": "검색을 도와주는 어시스턴트입니다.",
-                            "user": "파리의 날씨는 어때요?",
-                            "assistant": "파리의 현재 날씨를 확인해드리겠습니다.",
+                            "system": {"order": 1, "prompt": "검색을 도와주는 어시스턴트입니다."},
+                            "user": {"order": 2, "prompt": "파리의 날씨는 어때요?"},
+                            "assistant": {"order": 3, "prompt": "파리의 현재 날씨를 확인해드리겠습니다."}
                         },
                         "message": "검색 기능 개선",
                         "production": True,
@@ -262,7 +285,11 @@ async def read_prompt(
                         {
                             "id": 3,
                             "node_name": "검색노드",
-                            "content": {"system": "최신 검색 어시스턴트"},
+                            "content": {
+                                "system": {"order": 1, "prompt": "최신 검색 어시스턴트"},
+                                "user": {"order": 2, "prompt": None},
+                                "assistant": {"order": None, "prompt": None}
+                            },
                             "message": "성능 최적화 버전",
                             "production": True,
                             "version": 3,
@@ -272,7 +299,11 @@ async def read_prompt(
                         {
                             "id": 2,
                             "node_name": "검색노드",
-                            "content": {"system": "검색 도우미"},
+                            "content": {
+                                "system": {"order": 1, "prompt": "검색 도우미"},
+                                "user": {"order": 2, "prompt": None},
+                                "assistant": {"order": None, "prompt": None}
+                            },
                             "message": "기능 개선",
                             "production": False,
                             "version": 2,
@@ -317,7 +348,11 @@ async def read_prompts_by_node(
                     "example": {
                         "id": 1,
                         "node_name": "검색노드",
-                        "content": {"system": "향상된 검색 어시스턴트입니다."},
+                        "content": {
+                            "system": {"order": 1, "prompt": "향상된 검색 어시스턴트입니다."},
+                            "user": {"order": 2, "prompt": None},
+                            "assistant": {"order": None, "prompt": None}
+                        },
                         "message": "성능 최적화 완료",
                         "production": False,
                         "version": 1,
@@ -353,9 +388,18 @@ async def update_prompt(
                 "description": "프롬프트의 내용만 업데이트하는 경우",
                 "value": {
                     "content": {
-                        "system": "당신은 개선된 검색 전문 어시스턴트입니다. 정확하고 관련성 높은 결과를 제공해주세요.",
-                        "user": "최신 기술 트렌드에 대해 알려주세요.",
-                        "assistant": "최신 기술 트렌드를 정확한 데이터와 함께 설명드리겠습니다.",
+                        "system": {
+                            "order": 1,
+                            "prompt": "당신은 개선된 검색 전문 어시스턴트입니다. 정확하고 관련성 높은 결과를 제공해주세요."
+                        },
+                        "user": {
+                            "order": 2,
+                            "prompt": "최신 기술 트렌드에 대해 알려주세요."
+                        },
+                        "assistant": {
+                            "order": 3,
+                            "prompt": "최신 기술 트렌드를 정확한 데이터와 함께 설명드리겠습니다."
+                        }
                     }
                 },
             },
@@ -379,7 +423,12 @@ async def update_prompt(
                 "description": "여러 필드를 동시에 수정하는 경우",
                 "value": {
                     "content": {
-                        "system": "당신은 최첨단 AI 검색 어시스턴트입니다. 사용자의 질문을 정확히 이해하고 최적의 답변을 제공합니다."
+                        "system": {
+                            "order": 1,
+                            "prompt": "당신은 최첨단 AI 검색 어시스턴트입니다. 사용자의 질문을 정확히 이해하고 최적의 답변을 제공합니다."
+                        },
+                        "user": {"order": 2, "prompt": None},
+                        "assistant": {"order": None, "prompt": None}
                     },
                     "message": "🎉 v2.0 메이저 업데이트 - AI 모델 업그레이드 완료",
                     "production": False,
@@ -468,7 +517,11 @@ async def delete_prompt(
                     "example": {
                         "id": 5,
                         "node_name": "검색노드",
-                        "content": {"system": "최신 프로덕션 검색 어시스턴트"},
+                        "content": {
+                            "system": {"order": 1, "prompt": "최신 프로덕션 검색 어시스턴트"},
+                            "user": {"order": 2, "prompt": None},
+                            "assistant": {"order": None, "prompt": None}
+                        },
                         "message": "v3.0 정식 배포",
                         "production": True,
                         "version": 3,
@@ -539,12 +592,12 @@ async def set_production_prompt(
                             "production_prompt_id": 3,
                             "latest_version": 5
                         },
-                                                 {
-                             "node_name": "요약노드", 
-                             "prompt_count": 2,
-                             "production_prompt_id": None,
-                             "latest_version": 2
-                         }
+                        {
+                            "node_name": "요약노드", 
+                            "prompt_count": 2,
+                            "production_prompt_id": None,
+                            "latest_version": 2
+                        }
                     ]
                 }
             },
@@ -592,6 +645,81 @@ async def get_all_nodes():
         
     except Exception as e:
         return create_error_response(f"노드 목록 조회 중 오류가 발생했습니다: {str(e)}")
+
+
+# 노드 요약 정보 조회 (새 API)
+@router.get(
+    "/nodes-summary",
+    tags=["📋 4. 조회 및 검색"],
+    summary="📊 노드 요약 정보 조회",
+    description="각 노드별 프롬프트 개수와 가장 최근 생성 시간을 조회합니다.",
+    responses={
+        200: {
+            "description": "노드 요약 정보 조회 성공",
+            "content": {
+                "application/json": {
+                    "example": [
+                        {
+                            "node_name": "Prompt1",
+                            "prompt_count": 1,
+                            "latest_created_at": 1621073400
+                        },
+                        {
+                            "node_name": "Prompt2", 
+                            "prompt_count": 2,
+                            "latest_created_at": 1621159800
+                        },
+                        {
+                            "node_name": "Prompt3",
+                            "prompt_count": 3,
+                            "latest_created_at": 1735689600
+                        }
+                    ]
+                }
+            },
+        }
+    },
+)
+async def get_nodes_summary():
+    """
+    시스템에 등록된 모든 노드의 목록과 기본 통계를 반환합니다.
+    각 노드별로 프롬프트 개수, 프로덕션 프롬프트, 최신 버전 정보를 포함합니다.
+    """
+    try:
+        # 모든 노드 이름과 기본 통계 정보 조회
+        query = select(
+            prompts.c.node_name,
+            func.count(prompts.c.id).label('prompt_count'),
+            func.max(prompts.c.created_at).label('latest_created_at')
+        ).group_by(prompts.c.node_name).order_by(prompts.c.node_name)
+        
+        nodes_stats = await database.fetch_all(query)
+        
+        result = []
+        for node_stat in nodes_stats:
+            # 각 노드의 프로덕션 프롬프트 ID 조회
+            production_query = select(prompts.c.id).where(
+                prompts.c.node_name == node_stat.node_name,
+                prompts.c.production == True
+            )
+            production_prompt = await database.fetch_one(production_query)
+            
+            node_info = {
+                "node_name": node_stat.node_name,
+                "prompt_count": node_stat.prompt_count,
+                "latest_created_at": int(node_stat.latest_created_at.timestamp()) if node_stat.latest_created_at else None
+            }
+            result.append(node_info)
+        
+        # 결과를 직접 반환 (이미 딕셔너리 형태이므로 convert 불필요)
+        return ResponseSchema(
+            status="success",
+            data=result,
+            message="노드 요약 정보를 성공적으로 조회했습니다."
+        )
+        
+    except Exception as e:
+        return create_error_response(f"노드 요약 정보 조회 중 오류가 발생했습니다: {str(e)}")
 
 
 # 노드별 프롬프트 개수 조회
@@ -662,7 +790,11 @@ async def delete_prompts_by_node_name(
                     "example": {
                         "id": 2,
                         "node_name": "검색노드",
-                        "content": {"system": "이전 버전의 검색 어시스턴트"},
+                        "content": {
+                            "system": {"order": 1, "prompt": "이전 버전의 검색 어시스턴트"},
+                            "user": {"order": 2, "prompt": None},
+                            "assistant": {"order": None, "prompt": None}
+                        },
                         "message": "v1.5 안정화 버전",
                         "production": False,
                         "version": 2,
@@ -768,8 +900,15 @@ async def delete_prompt_by_version(
                         "id": 1,
                         "node_name": "검색노드",
                         "content": {
-                            "system": "수정된 시스템 프롬프트",
-                            "user": "수정된 유저 프롬프트",
+                            "system": {
+                                "order": 1,
+                                "prompt": "수정된 시스템 프롬프트"
+                            },
+                            "user": {
+                                "order": 2,
+                                "prompt": "수정된 유저 프롬프트"
+                            },
+                            "assistant": {"order": None, "prompt": None}
                         },
                         "message": "수정된 메시지",
                         "production": False,
@@ -804,8 +943,15 @@ async def update_prompt_by_version(
                 "summary": "프롬프트 내용을 변경하는 경우",
                 "value": {
                     "content": {
-                        "system": "변경된 시스템 프롬프트",
-                        "user": "변경된 유저 프롬프트",
+                        "system": {
+                            "order": 1,
+                            "prompt": "변경된 시스템 프롬프트"
+                        },
+                        "user": {
+                            "order": 2,
+                            "prompt": "변경된 유저 프롬프트"
+                        },
+                        "assistant": {"order": None, "prompt": None}
                     }
                 },
             },
