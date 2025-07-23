@@ -9,10 +9,10 @@ import {
 import React, { useState } from 'react'
 import { S_FlexWrapper } from '../../../styles/Page.style'
 import { message } from 'antd'
-import { DatasetsList } from '../../../../types/api'
+import { DatasetsList, DatasetsListItem } from '../../../../types/api'
 
 interface DatasetsTableProps {
-  data: DatasetsList[] | undefined
+  data: DatasetsListItem[] | undefined
   onChangePage: (page: number) => void
 }
 
@@ -136,18 +136,6 @@ const DatasetsTable = ({ data, onChangePage }: DatasetsTableProps) => {
       ),
     },
   ]
-
-  // let data = []
-  //
-  // for (let i = 0; i < 32; i++) {
-  //     data.push({
-  //         key: i,
-  //         name: `Prompt${i + 1}`,
-  //         description: `임시${i + 1}`,
-  //         items: 100 + i,
-  //         created: '2024-01-01',
-  //     })
-  // }
 
   return (
     <>

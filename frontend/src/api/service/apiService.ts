@@ -1,5 +1,16 @@
-const BASE_URL = process.env.REACT_APP_DEV_PROXY_SERVER
-export const PROMPT_ENDPOINT = `${BASE_URL}/prompts`
-export const DATASETS_ENDPOINT = `${BASE_URL}/datasets/`
-export const CHAINS_ENDPOINT = `${BASE_URL}/chains`
-export const INFO_ENDPOINT = `${BASE_URL}/info`
+import axiosCreate from '../../libs/axios'
+import { DATASETS_ENDPOINT, PROMPT_ENDPOINT, PROMPT_NODE } from './apiEndpoint'
+import { DatasetsList, PromptNodes, Prompts, PromptsResponse } from '../../types/api'
+import { AxiosResponse } from 'axios'
+
+// Prompt
+export const getPromptsNodes = (): Promise<AxiosResponse<PromptNodes[]>> =>
+  axiosCreate.get<PromptNodes[]>(PROMPT_NODE)
+export const postPrompts = (params: Prompts): Promise<AxiosResponse<PromptsResponse>> =>
+  axiosCreate.post<PromptsResponse>(PROMPT_ENDPOINT)
+
+// Evaluation
+
+// Datasets
+export const getDatasets = (): Promise<AxiosResponse<DatasetsList>> =>
+  axiosCreate.get<DatasetsList>(DATASETS_ENDPOINT)
