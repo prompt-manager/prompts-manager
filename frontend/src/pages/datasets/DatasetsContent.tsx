@@ -5,8 +5,8 @@ import { PlusOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import NewDataSetsForm from './components/form/NewDataSetsForm'
 import { message } from 'antd'
-import { getDatasets } from '../../api/service/datasetsService'
-import { DatasetsList } from '../../types/api'
+import { getDatasets } from '../../api/service/apiService'
+import { DatasetsList, DatasetsListItem } from '../../types/api'
 
 const DatasetsContent = () => {
   const [messageApi, contextHolder] = message.useMessage()
@@ -14,14 +14,14 @@ const DatasetsContent = () => {
 
   const [pageNumber, setPageNumber] = useState<number>(1)
 
-  const [datasetsList, setDatasetsList] = useState<DatasetsList[] | undefined>(undefined)
+  const [datasetsList, setDatasetsList] = useState<DatasetsListItem[] | undefined>(undefined)
 
   const fetchDatasets = async () => {
     try {
       const response = await getDatasets()
 
-      if (response.data) {
-        setDatasetsList(response.data as DatasetsList[])
+      if (response.status) {
+        setDatasetsList(response.data.items as DatasetsListItem[])
       }
     } catch (e) {
       console.error('[ERROR] fetchDatasets', e)
