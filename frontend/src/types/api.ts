@@ -1,3 +1,5 @@
+export type PromptType = 'system' | 'user' | 'assistant'
+
 export interface IPrompt {
   id?: number | string
   chain_name: string
@@ -101,4 +103,19 @@ export interface PromptsResponse extends Prompts {
   version: number
   created_at: string
   updated_at: string
+}
+
+export interface PromptNodeSummary {
+  node_name: string
+  prompt_count: number
+  latest_created_at: number
+}
+
+export interface DeleteNodeVersion {
+  node_name: string
+  version: number
+}
+
+export interface DeleteResponse {
+  detail: string
 }

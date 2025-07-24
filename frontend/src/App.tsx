@@ -7,24 +7,24 @@ import NotFound from './pages/error/NotFound'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './styles/base.scss'
 import CreatePrompt from './pages/prompt/CreatePrompt'
-import EditPromptPage from './pages/prompt/EditPrompt'
+import EditPromptPage from './pages/prompt/ManagePrompt'
 
 function App() {
-    return (
-        <>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/prompt" element={<PromptMain />} />
-                    <Route path="/prompt/create" element={<CreatePrompt />} />
-                    <Route path="/prompt/manage" element={<EditPromptPage />} />
-                    <Route path="/evaluation" element={<EvaluationMain />} />
-                    <Route path="/datasets" element={<DatasetsMain />} />
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
-            </BrowserRouter>
-        </>
-    )
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/prompt" element={<PromptMain />} />
+          <Route path="/prompt/create" element={<CreatePrompt />} />
+          <Route path="/prompt/manage" element={<EditPromptPage />} />
+          <Route path="/evaluation" element={<EvaluationMain />} />
+          <Route path="/datasets" element={<DatasetsMain />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  )
 }
 
 export default App

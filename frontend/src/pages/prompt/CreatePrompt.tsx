@@ -23,7 +23,7 @@ const CreatePrompt = () => {
         }
       }
       const parameter = {
-        node_name,
+        node_name: node_name[0],
         content: {
           system: {
             order: 1,
@@ -48,8 +48,6 @@ const CreatePrompt = () => {
           content: 'Creation failed.',
         })
       }
-
-      console.log('#parameter', parameter)
     } catch (e) {
       console.error('[ERROR] Create Prompt', e)
     }
