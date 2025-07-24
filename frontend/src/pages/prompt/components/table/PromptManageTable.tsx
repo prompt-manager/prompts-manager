@@ -5,28 +5,31 @@ import NodeDetailDrawer from '../drawer/NodeDetailDrawer'
 import { message } from 'antd'
 import { PromptNodeSummary } from '../../../../types/api'
 import { convertDateTime } from '../../../../utils/convertDateTime'
+import { deletePromptsNodeVersion } from '../../../../api/service/apiService'
 
 export interface NodeData {
   key: React.Key
-  name: string
-  versions: number
+  node_name: string
+  prompt_count: number
   latestUpdate: string
 }
 
 interface PromptManageTableProps {
   data: PromptNodeSummary[] | undefined
   onChangePage: (page: number) => void
+  refreshPromptList: () => Promise<void>
 }
 
-const PromptManageTable = ({ data, onChangePage }: PromptManageTableProps) => {
+const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptManageTableProps) => {
   const [messageApi, contextHolder] = message.useMessage()
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
   const [openDrawer, setOpenDrawer] = useState<boolean>(false)
-  const [selectedRow, setSelectedRow] = useState<NodeData | undefined>(undefined)
+  const [selectedRow, setSelectedRow] = useState<PromptNodeSummary | undefined>(undefined)
 
-  const handleClickNodeName = (record: NodeData) => {
+  const handleClickNodeName = (record: PromptNodeSummary) => {
     setSelectedRow(record)
+    setOpenDrawer(true)
   }
 
   const handleCloseDrawer = () => {
@@ -34,7 +37,8 @@ const PromptManageTable = ({ data, onChangePage }: PromptManageTableProps) => {
     setSelectedRow(undefined)
   }
 
-  const handleOpenDeleteModal = () => {
+  const handleClickDelete = (record: PromptNodeSummary) => {
+    setSelectedRow(record)
     setOpenDeleteModal(true)
   }
 
@@ -42,20 +46,31 @@ const PromptManageTable = ({ data, onChangePage }: PromptManageTableProps) => {
     setOpenDeleteModal(false)
   }
 
-  const handleDeletePrompt = () => {
-    setOpenDeleteModal(false)
+  const handleDeletePrompt = async () => {
+    try {
+      const response = await deletePromptsNodeVersion({
+        node_name: selectedRow?.node_name || '',
+        version: selectedRow?.prompt_count || 0,
+      })
 
-    // Delete
-    // selectedRow.key 에 해당하는 row 삭제
+      if (response.status) {
+        setOpenDeleteModal(false)
 
-    messageApi.open({
-      type: 'success',
-      content: 'Delete Successfully.',
-    })
-    // messageApi.open({
-    //     type: 'error',
-    //     content: 'Deletion failed.',
-    // })
+        messageApi.open({
+          type: 'success',
+          content: 'Delete Successfully.',
+        })
+
+        refreshPromptList()
+      } else {
+        messageApi.open({
+          type: 'error',
+          content: 'Deletion failed.',
+        })
+      }
+    } catch (e) {
+      console.error('[ERROR] Delete prompt', e)
+    }
   }
 
   const columns: any[] = [
@@ -63,7 +78,7 @@ const PromptManageTable = ({ data, onChangePage }: PromptManageTableProps) => {
       title: 'Node name',
       dataIndex: 'node_name',
       ellipsis: true,
-      render: (text: string, record: NodeData) => (
+      render: (text: string, record: PromptNodeSummary) => (
         <Tag fullText={text} width="10rem" onClick={() => handleClickNodeName(record)}>
           {text}
         </Tag>
@@ -74,7 +89,6 @@ const PromptManageTable = ({ data, onChangePage }: PromptManageTableProps) => {
       dataIndex: 'prompt_count',
     },
     {
-      // TODO api: UTC -> 한국 시간으로 변환
       title: 'Latest Version Created At',
       dataIndex: 'latest_created_at',
       ellipsis: true,
@@ -88,25 +102,19 @@ const PromptManageTable = ({ data, onChangePage }: PromptManageTableProps) => {
       title: '',
       dataIndex: 'delete',
       width: '100px',
-      render: (_: string) => (
-        <Button type="text" onClick={handleOpenDeleteModal}>
+      render: (_: string, record: PromptNodeSummary) => (
+        <Button type="text" onClick={() => handleClickDelete(record)}>
           <DeleteOutlined />
         </Button>
       ),
     },
   ]
 
-  useEffect(() => {
-    if (selectedRow) {
-      setOpenDrawer(true)
-    }
-  }, [selectedRow])
-
   return (
     <>
       {openDeleteModal && (
         <Modal open={openDeleteModal} onOk={handleDeletePrompt} onCancel={handleCloseDeleteModal}>
-          <WarningOutlined /> Are you sure you want to delete {selectedRow?.name}?
+          <WarningOutlined /> Are you sure you want to delete {selectedRow?.node_name}?
         </Modal>
       )}
       {contextHolder}

@@ -43,7 +43,11 @@ const EditPromptPage = () => {
         <Button type="primary" fixedSize onClick={handleClickCreate}>
           + New Prompt
         </Button>
-        <PromptManageTable data={promptList} onChangePage={handleChangePage} />
+        <PromptManageTable
+          data={promptList}
+          onChangePage={handleChangePage}
+          refreshPromptList={fetchPromptsNodesSummary}
+        />
       </S_FlexWrapper>
     </Layout>
   )
