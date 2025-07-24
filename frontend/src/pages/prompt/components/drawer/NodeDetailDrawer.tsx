@@ -5,92 +5,76 @@ import { S_FlexWrapper } from '../../../styles/Page.style'
 import PromptVersionDetail from '../../PromptVersionDetail'
 import PromptVersionList from '../../PromptVersionList'
 import { message } from 'antd'
+import { PromptNodeSummary, PromptsResponse } from '../../../../types/api'
+import { convertDateTime } from '../../../../utils/convertDateTime'
 
 interface NodeDetailDrawerProps {
-    openDrawer: boolean
-    selectedRow: NodeData | undefined
-    onClose: () => void
+  openDrawer: boolean
+  title: string
+  nodeDetail: PromptsResponse[] | undefined
+  onClose: () => void
+  refreshPromptsNode: (nodeName: string) => Promise<void>
+  refreshPromptList: () => Promise<void>
 }
 
-const versionList = [
-    {
-        version: '1',
-        name: '임시1',
-        date: '2025.6.14. 오전 11:45:35',
-        isProduction: false,
-        prompt: {
-            system: 'AI 전문가1 System',
-            user: 'AI 전문가1 User',
-            assistant: 'AI 전문가1 Assistant',
-        },
-    },
-    {
-        version: '2',
-        name: '임시2',
-        date: '2025.6.15. 오전 11:45:35',
-        isProduction: true,
-        prompt: {
-            system: 'AI 전문가2 System',
-            user: 'AI 전문가2 User',
-            assistant: 'AI 전문가2 Assistant',
-        },
-    },
-    {
-        version: '3',
-        name: '임시3',
-        date: '2025.6.16. 오전 11:45:35',
-        isProduction: false,
-        prompt: {
-            system: 'AI 전문가3 System',
-            user: 'AI 전문가3 User',
-            assistant: 'AI 전문가3 Assistant',
-        },
-    },
-]
-
 const NodeDetailDrawer = ({
-    openDrawer,
-    selectedRow,
-    onClose,
+  openDrawer,
+  nodeDetail,
+  title,
+  onClose,
+  refreshPromptsNode,
+  refreshPromptList,
 }: NodeDetailDrawerProps) => {
-    const [versionDetail, setVersionDetail] = useState<any>(undefined)
-    const [defaultProduction, setDefaultProduction] = useState<any>(undefined)
+  const [versionList, setVersionList] = useState<any>([])
+  const [versionDetail, setVersionDetail] = useState<PromptsResponse | undefined>(undefined)
+  const [defaultProduction, setDefaultProduction] = useState<string | number | undefined>(undefined)
 
-    const handleSetVersionDetail = (data: any) => {
-        setVersionDetail(data)
+  const handleSetVersionDetail = (data: PromptsResponse | undefined) => {
+    setVersionDetail(data)
+  }
+
+  const handleChangeDefaultProduction = (id: number | string) => {
+    setDefaultProduction(id)
+  }
+
+  useEffect(() => {
+    if (nodeDetail) {
+      setVersionDetail(nodeDetail[0])
+
+      const versionListData = nodeDetail.map((detail) => ({
+        id: detail.id,
+        node_name: detail.node_name,
+        version: detail.version,
+        date: convertDateTime(Number(detail.updated_at)),
+        isProduction: detail.production,
+        content: detail.content,
+      }))
+      setVersionList(versionListData)
+
+      const productionVersion = nodeDetail.find((item) => item.production)
+      setDefaultProduction(productionVersion?.id)
     }
+  }, [nodeDetail])
 
-    const handleChangeDefaultProduction = (version: string) => {
-        setDefaultProduction(version)
-    }
-
-    useEffect(() => {
-        setVersionDetail(versionList[0])
-        const productionVersion = versionList.find((item) => item.isProduction)
-        setDefaultProduction(productionVersion?.version)
-    }, [openDrawer])
-
-    return (
-        <Drawer
-            open={openDrawer}
-            title={selectedRow?.name}
-            size="large"
-            onClose={onClose}
-        >
-            <S_FlexWrapper flexDirection="row" height="100%">
-                <PromptVersionList
-                    defaultProduction={defaultProduction}
-                    versionList={versionList}
-                    onSetVersionDetail={handleSetVersionDetail}
-                />
-                <PromptVersionDetail
-                    defaultProduction={defaultProduction}
-                    versionDetail={versionDetail}
-                    onChangeDefaultProduction={handleChangeDefaultProduction}
-                />
-            </S_FlexWrapper>
-        </Drawer>
-    )
+  return (
+    <Drawer open={openDrawer} title={title} size="large" onClose={onClose}>
+      <S_FlexWrapper flexDirection="row" height="100%">
+        <PromptVersionList
+          defaultProduction={defaultProduction}
+          versionList={versionList}
+          onSetVersionDetail={handleSetVersionDetail}
+        />
+        <PromptVersionDetail
+          defaultProduction={defaultProduction}
+          versionDetail={versionDetail}
+          visibleDeleteButton={(nodeDetail?.length ?? 0) > 1}
+          onChangeDefaultProduction={handleChangeDefaultProduction}
+          refreshPromptsNode={refreshPromptsNode}
+          refreshPromptList={refreshPromptList}
+        />
+      </S_FlexWrapper>
+    </Drawer>
+  )
 }
 
 export default NodeDetailDrawer

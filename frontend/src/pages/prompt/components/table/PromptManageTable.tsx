@@ -3,9 +3,9 @@ import { DeleteOutlined, WarningOutlined } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react'
 import NodeDetailDrawer from '../drawer/NodeDetailDrawer'
 import { message } from 'antd'
-import { PromptNodeSummary } from '../../../../types/api'
+import { PromptNodeSummary, PromptsResponse } from '../../../../types/api'
 import { convertDateTime } from '../../../../utils/convertDateTime'
-import { deletePromptsNodeVersion } from '../../../../api/service/apiService'
+import { deletePromptsAllNodeName, getPromptsNode } from '../../../../api/service/apiService'
 
 export interface NodeData {
   key: React.Key
@@ -26,32 +26,23 @@ const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptMana
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
   const [openDrawer, setOpenDrawer] = useState<boolean>(false)
   const [selectedRow, setSelectedRow] = useState<PromptNodeSummary | undefined>(undefined)
+  const [nodeDetail, setNodeDetail] = useState<PromptsResponse[] | undefined>(undefined)
 
-  const handleClickNodeName = (record: PromptNodeSummary) => {
-    setSelectedRow(record)
-    setOpenDrawer(true)
-  }
-
-  const handleCloseDrawer = () => {
-    setOpenDrawer(false)
-    setSelectedRow(undefined)
-  }
-
-  const handleClickDelete = (record: PromptNodeSummary) => {
-    setSelectedRow(record)
-    setOpenDeleteModal(true)
-  }
-
-  const handleCloseDeleteModal = () => {
-    setOpenDeleteModal(false)
-  }
-
-  const handleDeletePrompt = async () => {
+  const fetchPromptsNode = async (nodeName: string) => {
     try {
-      const response = await deletePromptsNodeVersion({
-        node_name: selectedRow?.node_name || '',
-        version: selectedRow?.prompt_count || 0,
-      })
+      const response = await getPromptsNode(nodeName)
+
+      if (response.status) {
+        setNodeDetail(response.data!)
+      }
+    } catch (e) {
+      console.error('[ERROR] fetchPromptsNode', e)
+    }
+  }
+
+  const fetchDeletePromptsAllNodeName = async () => {
+    try {
+      const response = await deletePromptsAllNodeName(selectedRow?.node_name || '')
 
       if (response.status) {
         setOpenDeleteModal(false)
@@ -69,8 +60,32 @@ const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptMana
         })
       }
     } catch (e) {
-      console.error('[ERROR] Delete prompt', e)
+      console.error('[ERROR] fetchDeletePromptsAllNodeName', e)
     }
+  }
+
+  const handleClickNodeName = (record: PromptNodeSummary) => {
+    fetchPromptsNode(record.node_name)
+    setSelectedRow(record)
+  }
+
+  const handleCloseDrawer = () => {
+    setOpenDrawer(false)
+    setSelectedRow(undefined)
+    setNodeDetail(undefined)
+  }
+
+  const handleClickDelete = (record: PromptNodeSummary) => {
+    setSelectedRow(record)
+    setOpenDeleteModal(true)
+  }
+
+  const handleCloseDeleteModal = () => {
+    setOpenDeleteModal(false)
+  }
+
+  const handleDeletePrompt = () => {
+    fetchDeletePromptsAllNodeName()
   }
 
   const columns: any[] = [
@@ -110,6 +125,12 @@ const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptMana
     },
   ]
 
+  useEffect(() => {
+    if (nodeDetail) {
+      setOpenDrawer(true)
+    }
+  }, [nodeDetail])
+
   return (
     <>
       {openDeleteModal && (
@@ -132,8 +153,11 @@ const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptMana
       {openDrawer && (
         <NodeDetailDrawer
           openDrawer={openDrawer}
-          selectedRow={selectedRow}
+          title={selectedRow?.node_name || ''}
+          nodeDetail={nodeDetail}
           onClose={handleCloseDrawer}
+          refreshPromptsNode={fetchPromptsNode}
+          refreshPromptList={refreshPromptList}
         />
       )}
     </>
