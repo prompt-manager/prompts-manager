@@ -5,9 +5,19 @@ interface StyleProps {
   $tagType?: 'full' | 'outline'
   $color?: string
   $clickable?: boolean
+  width?: string
 }
 
 const S_Tag = styled(Tag)<StyleProps>`
+  ${({ width }) => `
+    width: ${width ?? 'fit-content'};
+  `}
+
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   ${({ $tagType = 'full', $color = '#3aafc7', $clickable = true }) => {
     if ($tagType === 'outline') {
       return `
