@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Select, TextArea, Input, Tooltip } from '../../../../components'
-import { S_Helper, S_ChangeButton } from '../../../styles/Page.style'
+import { Form, Select, TextArea, Input, Tooltip, Button } from '../../../../components'
+import { S_Helper } from '../../../styles/Page.style'
 import { getPromptsNodes } from '../../../../api/service/apiService'
 import { SelectOption } from '../../../../types/common'
 
@@ -12,6 +12,14 @@ interface CreatePromptFormProps {
 
 const CreatePromptForm = ({ form, promptOrder, onChangePromptOrder }: CreatePromptFormProps) => {
   const [nodeOptions, setNodeOptions] = useState<SelectOption[]>([])
+  const [isPromptFilled, setIsPromptFilled] = useState<{
+    user: boolean
+    assistant: boolean
+  }>({
+    user: false,
+    assistant: false,
+  })
+  const [changeOrderDisabled, setChangeOrderDisabled] = useState<boolean>(true)
 
   const fetchPromptsNodes = async () => {
     const response = await getPromptsNodes()
@@ -26,9 +34,36 @@ const CreatePromptForm = ({ form, promptOrder, onChangePromptOrder }: CreateProm
     }
   }
 
+  const handleChangeUserPrompt = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+
+    if (value.trim()) {
+      setIsPromptFilled((prev) => ({ ...prev, user: true }))
+    } else setIsPromptFilled((prev) => ({ ...prev, user: false }))
+  }
+
+  const handleChangeAssistantPrompt = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+
+    if (value.trim()) {
+      setIsPromptFilled((prev) => ({ ...prev, assistant: true }))
+    } else setIsPromptFilled((prev) => ({ ...prev, assistant: false }))
+  }
+
+  const handleChangePrompt = {
+    user: handleChangeUserPrompt,
+    assistant: handleChangeAssistantPrompt,
+  }
+
   useEffect(() => {
     fetchPromptsNodes()
   }, [])
+
+  useEffect(() => {
+    if (isPromptFilled.user && isPromptFilled.assistant) {
+      setChangeOrderDisabled(false)
+    } else setChangeOrderDisabled(true)
+  }, [isPromptFilled])
 
   return (
     <Form form={form} layout="vertical">
@@ -38,7 +73,7 @@ const CreatePromptForm = ({ form, promptOrder, onChangePromptOrder }: CreateProm
         width="100%"
         rules={[{ required: true, message: 'Please select node name!' }]}
       >
-        <Select placeholder="Select a node name" options={nodeOptions} />
+        <Select mode="tags" maxCount={1} placeholder="Select a node name" options={nodeOptions} />
       </Form.Item>
       <Form.Item
         name="system"
@@ -56,10 +91,11 @@ const CreatePromptForm = ({ form, promptOrder, onChangePromptOrder }: CreateProm
           <Input
             placeholder={`Enter a ${role} prompt here.`}
             suffix={
-              <S_ChangeButton onClick={onChangePromptOrder}>
+              <Button type="text" disabled={changeOrderDisabled} onClick={onChangePromptOrder}>
                 <Tooltip title="Change order">⇅</Tooltip>
-              </S_ChangeButton>
+              </Button>
             }
+            onChange={handleChangePrompt[role]}
           />
         </Form.Item>
       ))}
