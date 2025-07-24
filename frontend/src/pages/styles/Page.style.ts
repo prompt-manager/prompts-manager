@@ -101,7 +101,7 @@ export const S_PromptVersion = styled.div<{ isSelected?: boolean }>`
   flex-direction: column;
   gap: var(--spacing-04);
   width: 100%;
-  height: 10rem;
+  height: 8rem;
   border-radius: var(--radius-01);
   background: ${({ isSelected }) => (isSelected ? 'var(--layer-01)' : 'transparent')};
 
