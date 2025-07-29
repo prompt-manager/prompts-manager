@@ -166,6 +166,65 @@ async def get_datasets_paginated(
         return create_error_response(f"데이터셋 목록 조회 중 오류가 발생했습니다: {str(e)}")
 
 
+# 간단한 데이터셋 목록 조회 (드롭다운용)
+@router.get(
+    "/list",
+    tags=["📋 4. 조회 및 검색"],
+    summary="📋 간단한 데이터셋 목록 조회",
+    description="드롭다운이나 선택 목록용으로 사용할 수 있는 간단한 데이터셋 목록을 조회합니다.",
+    responses={
+        200: {
+            "description": "간단한 데이터셋 목록 조회 성공",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "success",
+                        "data": [
+                            {"id": 1, "name": "dataset1"},
+                            {"id": 2, "name": "dataset2"},
+                            {"id": 3, "name": "dataset3"}
+                        ],
+                        "message": "데이터셋 목록을 성공적으로 조회했습니다."
+                    }
+                }
+            },
+        }
+    },
+)
+async def get_datasets_list():
+    """
+    드롭다운이나 선택 목록용 간단한 데이터셋 목록을 조회합니다.
+    
+    id와 name만 포함된 가벼운 응답을 반환합니다.
+    모든 데이터셋을 최신 생성순으로 정렬하여 반환합니다.
+    """
+    try:
+        # id와 name만 선택하여 조회
+        query = (
+            select(datasets.c.id, datasets.c.name)
+            .order_by(datasets.c.created_at.desc())
+        )
+        
+        items = await database.fetch_all(query)
+        
+        # 딕셔너리 형태로 수동 변환
+        dataset_list = [{"id": item[0], "name": item[1]} for item in items]
+        
+        # 직접 딕셔너리 반환 (ResponseSchema 사용하지 않음)
+        return {
+            "status": "success",
+            "data": dataset_list,
+            "message": "데이터셋 목록을 성공적으로 조회했습니다."
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error", 
+            "data": None,
+            "message": f"데이터셋 목록 조회 중 오류가 발생했습니다: {str(e)}"
+        }
+
+
 # 데이터셋 삭제
 @router.delete(
     "/{dataset_id}",
