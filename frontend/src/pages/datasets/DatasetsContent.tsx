@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import NewDataSetsForm from './components/form/NewDataSetsForm'
 import { message } from 'antd'
-import { getDatasets } from '../../api/service/apiService'
+import { getDatasets, getDatasetsSearch } from '../../api/service/apiService'
 import { DatasetsList, DatasetsListItem } from '../../types/api'
 
 const DatasetsContent = () => {
@@ -13,6 +13,7 @@ const DatasetsContent = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
 
   const [pageNumber, setPageNumber] = useState<number>(1)
+  const [searchText, setSearchText] = useState<string>('')
 
   const [datasetsList, setDatasetsList] = useState<DatasetsListItem[] | undefined>(undefined)
 
@@ -21,10 +22,34 @@ const DatasetsContent = () => {
       const response = await getDatasets()
 
       if (response.status) {
-        setDatasetsList(response.data.items as DatasetsListItem[])
+        setDatasetsList(response.data?.items as DatasetsListItem[])
       }
     } catch (e) {
       console.error('[ERROR] fetchDatasets', e)
+    }
+  }
+
+  const fetchDatasetsSearch = async (keyword: string) => {
+    try {
+      const response = await getDatasetsSearch(keyword)
+
+      if (response.status) {
+        setDatasetsList(response.data as DatasetsListItem[])
+      }
+    } catch (e) {
+      console.error('[ERROR] fetchDatasetsSearch', e)
+    }
+  }
+
+  const handleChangeSearchText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value)
+  }
+
+  const handleClickSearch = () => {
+    if (!searchText.trim()) {
+      fetchDatasets()
+    } else {
+      fetchDatasetsSearch(searchText)
     }
   }
 
@@ -82,8 +107,17 @@ const DatasetsContent = () => {
           </Tooltip>
         </S_FlexWrapper>
         <S_FlexWrapper flexDirection="column">
-          <Search placeholder="Search prompt" width="280px" />
-          <DatasetsTable data={datasetsList} onChangePage={handleChangePage} />
+          <Search
+            placeholder="Search prompt"
+            width="280px"
+            onChange={handleChangeSearchText}
+            onSearch={handleClickSearch}
+          />
+          <DatasetsTable
+            data={datasetsList}
+            onChangePage={handleChangePage}
+            refreshDatasets={fetchDatasets}
+          />
         </S_FlexWrapper>
       </S_FlexWrapper>
     </>

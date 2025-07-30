@@ -1,6 +1,11 @@
 import axiosCreate from '../../libs/axios'
 import {
   DATASETS_ENDPOINT,
+  DATASETS_LIST,
+  DATASETS_SEARCH,
+  EVALUATIONS_METRIC,
+  EVALUATIONS_RESULTS_TABLE,
+  EVALUATIONS_RUN,
   PROMPT_ENDPOINT,
   PROMPT_NODE,
   PROMPT_NODES,
@@ -9,8 +14,12 @@ import {
 } from './apiEndpoint'
 import {
   DatasetsList,
+  DatasetsListItem,
   DeleteNodeVersion,
   DeleteResponse,
+  EvaluationParams,
+  EvaluationResults,
+  EvaluationsMetrics,
   PromptNodes,
   PromptNodeSummary,
   Prompts,
@@ -26,7 +35,15 @@ export const getPromptsNodesSummary = (): Promise<AxiosResponse<PromptNodeSummar
 export const getPromptsNode = (nodeName: string): Promise<AxiosResponse<PromptsResponse[]>> =>
   axiosCreate.get<PromptsResponse[]>(`${PROMPT_NODE}/${nodeName}`)
 
-export const postPrompts = (params: Prompts): Promise<AxiosResponse<PromptsResponse>> =>
+export const postPrompts = (params: {
+  node_name: any
+  message: string | null
+  content: {
+    system: { prompt: any; order: number }
+    assistant: { prompt: string | null; order: number | null }
+    user: { prompt: string | null; order: number | null }
+  }
+}): Promise<AxiosResponse<PromptsResponse>> =>
   axiosCreate.post<PromptsResponse>(PROMPT_ENDPOINT, params)
 export const postPromptsProduction = (
   promptIds: string | number
@@ -41,7 +58,25 @@ export const deletePromptsNodeVersion = (
   axiosCreate.delete<DeleteResponse>(`${PROMPT_NODE}/${params.node_name}/version/${params.version}`)
 
 // Evaluation
+export const getEvaluationsMetrics = (): Promise<AxiosResponse<EvaluationsMetrics[]>> =>
+  axiosCreate.get<EvaluationsMetrics[]>(EVALUATIONS_METRIC)
+export const getEvaluationsResultsTable = (
+  params: EvaluationParams
+): Promise<AxiosResponse<EvaluationResults[]>> =>
+  axiosCreate.get<EvaluationResults[]>(
+    `${EVALUATIONS_RESULTS_TABLE}?node_name=${params.node_name}&dataset_id=${params.dataset_id}&metric_name=${params.metric_name}`
+  )
 
 // Datasets
 export const getDatasets = (): Promise<AxiosResponse<DatasetsList>> =>
   axiosCreate.get<DatasetsList>(DATASETS_ENDPOINT)
+export const getDatasetsList = (): Promise<AxiosResponse<DatasetsList[]>> =>
+  axiosCreate.get<DatasetsList[]>(DATASETS_LIST)
+export const getDatasetsSearch = (keyword: string): Promise<AxiosResponse<DatasetsListItem[]>> =>
+  axiosCreate.get<DatasetsListItem[]>(`${DATASETS_SEARCH}?query=${keyword}`)
+
+export const putDatasets = (params: DatasetsListItem): Promise<AxiosResponse<string>> =>
+  axiosCreate.put<string>(`${DATASETS_ENDPOINT}${params.id}`, {
+    name: params.name,
+    description: params.description,
+  })

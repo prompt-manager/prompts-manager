@@ -3,9 +3,11 @@ import { Form, Select, TextArea, Input, Tooltip, Button } from '../../../../comp
 import { S_Helper } from '../../../styles/Page.style'
 import { getPromptsNodes } from '../../../../api/service/apiService'
 import { SelectOption } from '../../../../types/common'
+import { CreatePromptFormValues } from '../../CreatePrompt'
+import { FormInstance } from 'antd'
 
 interface CreatePromptFormProps {
-  form: any
+  form: FormInstance<CreatePromptFormValues>
   promptOrder: ('user' | 'assistant')[]
   onChangePromptOrder: () => void
 }
@@ -25,7 +27,7 @@ const CreatePromptForm = ({ form, promptOrder, onChangePromptOrder }: CreateProm
     const response = await getPromptsNodes()
 
     if (response.status) {
-      const options = response.data.map((res) => ({
+      const options = response.data?.map((res) => ({
         label: res.node_name,
         value: res.node_name,
       }))
