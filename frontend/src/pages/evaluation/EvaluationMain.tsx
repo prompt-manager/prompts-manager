@@ -30,7 +30,7 @@ const EvaluationMain = () => {
     const response = await getPromptsNodes()
 
     if (response.status) {
-      const options = response.data.map((res) => ({
+      const options = response.data?.map((res) => ({
         label: res.node_name,
         value: res.node_name,
       }))
@@ -44,7 +44,7 @@ const EvaluationMain = () => {
       const response = await getDatasetsList()
 
       if (response.status) {
-        const options = response.data.map((res) => ({
+        const options = response.data?.map((res) => ({
           label: res.name,
           value: res.id,
         }))
@@ -61,7 +61,7 @@ const EvaluationMain = () => {
       const response = await getEvaluationsMetrics()
 
       if (response.status) {
-        const options = response.data.map((res) => ({
+        const options = response.data?.map((res) => ({
           label: res.name,
           value: res.key,
         }))
@@ -84,7 +84,7 @@ const EvaluationMain = () => {
       const response = await getEvaluationsResultsTable(parameter)
 
       if (response.status) {
-        const data = response.data.map((res) => ({
+        const data = response.data?.map((res) => ({
           name: res.name,
           version: res.version,
           dataset_name: res.dataset_name,
