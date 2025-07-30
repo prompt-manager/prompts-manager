@@ -3,9 +3,11 @@ import { Form, Select, TextArea, Input, Tooltip, Button } from '../../../../comp
 import { S_Helper } from '../../../styles/Page.style'
 import { getPromptsNodes } from '../../../../api/service/apiService'
 import { SelectOption } from '../../../../types/common'
+import { CreatePromptFormValues } from '../../CreatePrompt'
+import { FormInstance } from 'antd'
 
 interface CreatePromptFormProps {
-  form: any
+  form: FormInstance<CreatePromptFormValues>
   promptOrder: ('user' | 'assistant')[]
   onChangePromptOrder: () => void
 }

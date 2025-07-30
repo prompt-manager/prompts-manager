@@ -5,8 +5,16 @@ import { S_FlexWrapper } from '../styles/Page.style'
 import { message } from 'antd'
 import { postPrompts } from '../../api/service/apiService'
 
+export interface CreatePromptFormValues {
+  node_name: string[]
+  system: string
+  user?: string
+  assistant?: string
+  message?: string
+}
+
 const CreatePrompt = () => {
-  const [form] = Form.useForm()
+  const [form] = Form.useForm<CreatePromptFormValues>()
   const [messageApi, contextHolder] = message.useMessage()
 
   const [promptOrder, setPromptOrder] = useState<('user' | 'assistant')[]>(['user', 'assistant'])
