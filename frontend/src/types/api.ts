@@ -70,7 +70,7 @@ export interface DatasetsListItem {
   content: string
   name: string
   description: string
-  created_at: string
+  created_at?: string
 }
 
 export interface DatasetsList {

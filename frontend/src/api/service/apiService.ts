@@ -2,6 +2,7 @@ import axiosCreate from '../../libs/axios'
 import {
   DATASETS_ENDPOINT,
   DATASETS_LIST,
+  DATASETS_SEARCH,
   EVALUATIONS_METRIC,
   EVALUATIONS_RESULTS_TABLE,
   EVALUATIONS_RUN,
@@ -13,6 +14,7 @@ import {
 } from './apiEndpoint'
 import {
   DatasetsList,
+  DatasetsListItem,
   DeleteNodeVersion,
   DeleteResponse,
   EvaluationParams,
@@ -70,3 +72,11 @@ export const getDatasets = (): Promise<AxiosResponse<DatasetsList>> =>
   axiosCreate.get<DatasetsList>(DATASETS_ENDPOINT)
 export const getDatasetsList = (): Promise<AxiosResponse<DatasetsList[]>> =>
   axiosCreate.get<DatasetsList[]>(DATASETS_LIST)
+export const getDatasetsSearch = (keyword: string): Promise<AxiosResponse<DatasetsListItem[]>> =>
+  axiosCreate.get<DatasetsListItem[]>(`${DATASETS_SEARCH}?query=${keyword}`)
+
+export const putDatasets = (params: DatasetsListItem): Promise<AxiosResponse<string>> =>
+  axiosCreate.put<string>(`${DATASETS_ENDPOINT}${params.id}`, {
+    name: params.name,
+    description: params.description,
+  })

@@ -9,34 +9,51 @@ import {
 import React, { useState } from 'react'
 import { S_FlexWrapper } from '../../../styles/Page.style'
 import { message } from 'antd'
-import { DatasetsList, DatasetsListItem } from '../../../../types/api'
+import { DatasetsListItem } from '../../../../types/api'
+import { convertDateTime } from '../../../../utils/convertDateTime'
+import { putDatasets } from '../../../../api/service/apiService'
 
 interface DatasetsTableProps {
   data: DatasetsListItem[] | undefined
   onChangePage: (page: number) => void
+  refreshDatasets: () => Promise<void>
 }
 
-const DatasetsTable = ({ data, onChangePage }: DatasetsTableProps) => {
+const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTableProps) => {
   const [messageApi, contextHolder] = message.useMessage()
 
   const [selectedRow, setSelectedRow] = useState<{
-    key: string
+    id: string
     name: string
   } | null>(null)
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-  const handleClickEdit = () => {
-    setSelectedRow(null)
-    // Edit
+  const fetchEditDatasets = async (params: DatasetsListItem) => {
+    try {
+      const response = await putDatasets(params)
 
-    messageApi.open({
-      type: 'success',
-      content: 'Edit Successfully.',
-    })
-    // messageApi.open({
-    //     type: 'error',
-    //     content: 'Edit failed.',
-    // })
+      if (response.status) {
+        messageApi.open({
+          type: 'success',
+          content: 'Edit Successfully.',
+        })
+
+        refreshDatasets()
+      } else {
+        messageApi.open({
+          type: 'error',
+          content: 'Edit failed.',
+        })
+      }
+    } catch (e) {
+      console.error('[ERROR] fetchEditDatasets', e)
+    } finally {
+      setSelectedRow(null)
+    }
+  }
+
+  const handleEdit = (record: DatasetsListItem) => {
+    fetchEditDatasets(record)
   }
 
   const handleClickCancelEdit = () => {
@@ -68,27 +85,25 @@ const DatasetsTable = ({ data, onChangePage }: DatasetsTableProps) => {
 
   const columns = [
     {
-      title: 'Name',
+      title: 'Node name',
       dataIndex: 'name',
       ellipsis: true,
       render: (text: string, record: any) => {
-        const isEditing = record.key === selectedRow?.key
+        const isEditing = record.id === selectedRow?.id
+
         return isEditing ? (
-          <S_FlexWrapper>
-            <Input defaultValue={text} width="120px" />
-            <Tooltip title="apply">
-              <Button type="text" onClick={handleClickEdit}>
+          <S_FlexWrapper alignItems="center">
+            <Input defaultValue={text} width="160px" />
+            <Button type="text" onClick={() => handleEdit(record)}>
+              <Tooltip title="apply">
                 <CheckOutlined />
-              </Button>
-            </Tooltip>
-            <Tooltip title="cancel">
-              <Button type="text" onClick={handleClickCancelEdit}>
-                <RollbackOutlined />
-              </Button>
-            </Tooltip>
+              </Tooltip>
+            </Button>
           </S_FlexWrapper>
         ) : (
-          <Tag>{text}</Tag>
+          <S_FlexWrapper alignItems="center">
+            <Tag>{text}</Tag>
+          </S_FlexWrapper>
         )
       },
     },
@@ -101,13 +116,12 @@ const DatasetsTable = ({ data, onChangePage }: DatasetsTableProps) => {
       dataIndex: 'content',
     },
     {
-      // TODO api: UTC -> 한국 시간으로 변환
       title: 'Created',
       dataIndex: 'created_at',
       ellipsis: true,
       render: (text: string) => (
         <Tooltip title={text} placement="topLeft">
-          {text}
+          {convertDateTime(Number(text))}
         </Tooltip>
       ),
     },
@@ -115,13 +129,27 @@ const DatasetsTable = ({ data, onChangePage }: DatasetsTableProps) => {
       title: '',
       dataIndex: 'edit',
       width: '100px',
-      render: (_: string, record: any) => (
-        <Button type="text" onClick={() => setSelectedRow(record)}>
-          <Tooltip title="edit">
-            <FormOutlined />
-          </Tooltip>
-        </Button>
-      ),
+      render: (_: string, record: any) => {
+        const isEditing = record.id === selectedRow?.id
+
+        return (
+          <>
+            {isEditing ? (
+              <Button type="text" onClick={handleClickCancelEdit}>
+                <Tooltip title="cancel">
+                  <RollbackOutlined />
+                </Tooltip>
+              </Button>
+            ) : (
+              <Button type="text" onClick={() => setSelectedRow(record)}>
+                <Tooltip title="edit">
+                  <FormOutlined />
+                </Tooltip>
+              </Button>
+            )}
+          </>
+        )
+      },
     },
     {
       title: '',
