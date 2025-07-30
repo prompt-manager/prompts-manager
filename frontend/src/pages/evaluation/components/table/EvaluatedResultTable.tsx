@@ -5,70 +5,70 @@ import React, { useState } from 'react'
 import { message } from 'antd'
 
 interface EvaluatedResultTableProps {
-    data: any
+  data: any
 }
 
 const EvaluatedResultTable = ({ data }: EvaluatedResultTableProps) => {
-    const [messageApi, contextHolder] = message.useMessage()
+  const [messageApi, contextHolder] = message.useMessage()
 
-    const [selectedRow, setSelectedRow] = useState<any>(undefined)
+  const [selectedRow, setSelectedRow] = useState<any>(undefined)
 
-    const handleChangeProduction = () => {
-        messageApi.open({
-            type: 'success',
-            content: 'Change Successfully.',
-        })
-        // messageApi.open({
-        //     type: 'error',
-        //     content: 'Change failed.',
-        // })
-    }
+  const handleChangeProduction = () => {
+    messageApi.open({
+      type: 'success',
+      content: 'Change Successfully.',
+    })
+    // messageApi.open({
+    //     type: 'error',
+    //     content: 'Change failed.',
+    // })
+  }
 
-    const columns: any[] = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            ellipsis: true,
-            render: (text: string) => <Tag>{text}</Tag>,
-        },
-        {
-            title: 'Versions',
-            width: '90px',
-            dataIndex: 'versions',
-        },
-        {
-            title: 'Datasets',
-            dataIndex: 'datasets',
-        },
-        {
-            title: 'Metric',
-            width: '120px',
-            dataIndex: 'metric',
-        },
-        {
-            title: 'Production',
-            dataIndex: 'production',
-            render: (_: string, record: any) => {
-                setSelectedRow(record)
+  const columns: any[] = [
+    {
+      title: 'Node name',
+      dataIndex: 'name',
+      ellipsis: true,
+      render: (text: string) => <Tag>{text}</Tag>,
+    },
+    {
+      title: 'Versions',
+      width: '90px',
+      dataIndex: 'version',
+    },
+    {
+      title: 'Datasets',
+      dataIndex: 'dataset_name',
+    },
+    {
+      title: 'Metric score',
+      width: '120px',
+      dataIndex: 'score',
+    },
+    {
+      title: 'Production',
+      dataIndex: 'production',
+      render: (_: string, record: any) => {
+        setSelectedRow(record)
 
-                return (
-                    <Select
-                        width="120px"
-                        defaultValue={record.production.default}
-                        options={record.production.options}
-                        onChange={handleChangeProduction}
-                    />
-                )
-            },
-        },
-    ]
+        return (
+          <Select
+            width="120px"
+            // defaultValue={record.production.default}
+            options={[]}
+            onChange={handleChangeProduction}
+          />
+        )
+      },
+    },
+  ]
 
-    return (
-        <>
-            {contextHolder}
-            <Table columns={columns} dataSource={data} pagination={false} />
-        </>
-    )
+  return (
+    <>
+      {contextHolder}
+      <Table columns={columns} dataSource={data} pagination={false} />
+    </>
+  )
 }
 
 export default EvaluatedResultTable

@@ -1,34 +1,47 @@
 import { Form, Select } from '../../../../components'
 import React from 'react'
+import { SelectOption } from '../../../../types/common'
+import { FormInstance } from 'antd'
+import { EvaluationParams } from '../../../../types/api'
 
-const EvaluationForm = () => {
-    return (
-        <Form layout="vertical">
-            <Form.Item label="Node Name" name="name" width="100%" required>
-                <Select
-                    placeholder="Select a node name"
-                    options={[{ label: 1, value: 1 }]}
-                />
-            </Form.Item>
-            <Form.Item
-                label="Prompt Version"
-                name="version"
-                width="100%"
-                required
-            >
-                <Select
-                    placeholder="Select a node prompt version"
-                    options={[]}
-                />
-            </Form.Item>
-            <Form.Item label="Datasets" name="datasets" width="100%" required>
-                <Select placeholder="Select a node datasets" options={[]} />
-            </Form.Item>
-            <Form.Item label="Metric Name" name="metric" width="100%" required>
-                <Select placeholder="Select a node metric" options={[]} />
-            </Form.Item>
-        </Form>
-    )
+interface EvaluationFormProps {
+  form: FormInstance<EvaluationParams>
+  options: {
+    node: SelectOption[]
+    datasets: SelectOption[]
+    metric: SelectOption[]
+  }
+}
+
+const EvaluationForm = ({ form, options }: EvaluationFormProps) => {
+  return (
+    <Form form={form} layout="vertical">
+      <Form.Item
+        label="Node Name"
+        name="node_name"
+        width="100%"
+        rules={[{ required: true, message: 'Please select node name!' }]}
+      >
+        <Select placeholder="Select a node name" options={options.node} />
+      </Form.Item>
+      <Form.Item
+        label="Datasets"
+        name="dataset_id"
+        width="100%"
+        rules={[{ required: true, message: 'Please select dataset id!' }]}
+      >
+        <Select placeholder="Select a node datasets" options={options.datasets} />
+      </Form.Item>
+      <Form.Item
+        label="Metric Name"
+        name="metric_name"
+        width="100%"
+        rules={[{ required: true, message: 'Please select metric name!' }]}
+      >
+        <Select placeholder="Select a node metric" options={options.metric} />
+      </Form.Item>
+    </Form>
+  )
 }
 
 export default EvaluationForm
