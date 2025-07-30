@@ -73,6 +73,11 @@ export interface DatasetsListItem {
   created_at: string
 }
 
+export interface DatasetsList {
+  id: string | number
+  name: string
+}
+
 export interface PromptNodes {
   node_name: string
   prompt_count: number
@@ -118,4 +123,29 @@ export interface DeleteNodeVersion {
 
 export interface DeleteResponse {
   detail: string
+}
+
+export interface EvaluationsMetrics {
+  key: string
+  name: string
+  description: string
+  unit: string
+}
+
+export interface EvaluationParams {
+  node_name: string | number
+  dataset_id: string | number
+  metric_name: string
+}
+
+export interface EvaluationResults {
+  name: string
+  version: number | string
+  dataset_name: string
+  metric?: string
+  score: number
+  production?: boolean
+  evaluation_id?: string | number
+  prompt_id?: string | number
+  dateset_id?: string | number
 }
