@@ -373,3 +373,143 @@ async def get_evaluation_results_paginated(
         
     except Exception as e:
         return create_error_response(f"평가 결과 조회 중 오류가 발생했습니다: {str(e)}")
+
+
+# 평가 결과 테이블 조회용 스키마 (화면용)
+class EvaluationTableRow(BaseModel):
+    name: str  # 노드명
+    version: int  # 프롬프트 버전
+    dataset_name: str  # 데이터셋명
+    metric: str  # 평가지표
+    score: float  # 점수
+    production: bool  # 프로덕션 설정
+    evaluation_id: int  # 평가 결과 ID
+    prompt_id: int  # 프롬프트 ID
+    dataset_id: int  # 데이터셋 ID
+
+@router.get(
+    "/results/table",
+    tags=["📋 4. 조회 및 검색"],
+    summary="📊 평가 결과 테이블 조회",
+    description="화면 테이블에 표시할 평가 결과를 조회합니다. 프롬프트, 데이터셋 정보가 포함된 조인된 데이터를 반환합니다.",
+    responses={
+        200: {
+            "description": "평가 결과 테이블 조회 성공",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "success",
+                        "data": [
+                            {
+                                "name": "검색노드",
+                                "version": 1,
+                                "dataset_name": "data1",
+                                "metric": "accuracy",
+                                "score": 0.95,
+                                "production": True,
+                                "evaluation_id": 1,
+                                "prompt_id": 1,
+                                "dataset_id": 1
+                            },
+                            {
+                                "name": "검색노드",
+                                "version": 2,
+                                "dataset_name": "data2",
+                                "metric": "response_time",
+                                "score": 0.87,
+                                "production": False,
+                                "evaluation_id": 2,
+                                "prompt_id": 2,
+                                "dataset_id": 2
+                            }
+                        ],
+                        "message": "평가 결과 테이블을 성공적으로 조회했습니다."
+                    }
+                }
+            },
+        }
+    },
+)
+async def get_evaluation_results_table(
+    node_name: str = Query(..., description="노드명 (필수)"),
+    dataset_id: int = Query(..., description="데이터셋 ID (필수)"),
+    metric_name: str = Query(..., description="평가 지표 (필수)"),
+):
+    """
+    화면 테이블에 표시할 평가 결과를 조회합니다.
+    
+    프롬프트, 데이터셋, 평가 결과를 조인하여 다음 정보를 제공합니다:
+    - 노드명, 버전, 데이터셋명, 평가지표, 점수, 프로덕션 설정
+    - 모든 조건이 필수: 노드명, 데이터셋 ID, 평가지표를 모두 지정해야 함
+    """
+    try:
+        # 조인 쿼리 구성
+        from sqlalchemy import text
+        
+        base_query = text("""
+            SELECT 
+                er.id as evaluation_id,
+                er.prompt_id,
+                er.dataset_id,
+                er.metric_name,
+                er.score,
+                p.node_name,
+                p.version,
+                p.production,
+                d.name as dataset_name
+            FROM evaluation_results er
+            JOIN prompts p ON er.prompt_id = p.id
+            JOIN datasets d ON er.dataset_id = d.id
+            WHERE 1=1
+        """)
+        
+        # 필수 조건 추가 (모든 조건이 필수)
+        where_conditions = [
+            "AND p.node_name = :node_name",
+            "AND d.id = :dataset_id", 
+            "AND er.metric_name = :metric_name"
+        ]
+        
+        params = {
+            "node_name": node_name,
+            "dataset_id": dataset_id,
+            "metric_name": metric_name
+        }
+        
+        # 최종 쿼리 생성
+        final_query = str(base_query) + " " + " ".join(where_conditions) + " ORDER BY er.created_at DESC"
+        
+        # 쿼리 실행
+        results = await database.fetch_all(final_query, params)
+        
+        # 결과 변환
+        table_data = []
+        for row in results:
+            table_data.append({
+                "name": row["node_name"],
+                "version": row["version"],
+                "dataset_name": row["dataset_name"],
+                "metric": row["metric_name"],
+                "score": row["score"],
+                "production": row["production"],
+                "evaluation_id": row["evaluation_id"],
+                "prompt_id": row["prompt_id"],
+                "dataset_id": row["dataset_id"]
+            })
+        
+        # 조회 조건 메시지 구성
+        filter_message = f" (노드: {node_name}, 데이터셋 ID: {dataset_id}, 지표: {metric_name})"
+        message = f"평가 결과 테이블을 성공적으로 조회했습니다{filter_message}."
+        
+        return {
+            "status": "success",
+            "data": table_data,
+            "message": message
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "message": f"평가 결과 테이블 조회 중 오류가 발생했습니다: {str(e)}"
+        }
