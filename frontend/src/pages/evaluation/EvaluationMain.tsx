@@ -73,7 +73,7 @@ const EvaluationMain = () => {
     }
   }
 
-  const handleEvaluate = async () => {
+  const fetchEvaluatedResult = async () => {
     try {
       setEvaluationLoading(true)
 
@@ -85,19 +85,23 @@ const EvaluationMain = () => {
 
       if (response.status) {
         const data = response.data?.map((res) => ({
-          name: res.name,
           version: res.version,
-          dataset_name: res.dataset_name,
+          prompt_id: res.prompt_id,
           score: res.score,
+          production: res.production,
         }))
 
         setEvaluatedResult(data!)
       }
     } catch (e) {
-      console.error('[ERROR] handleEvaluate', e)
+      console.error('[ERROR] fetchEvaluatedResult', e)
     } finally {
       setEvaluationLoading(false)
     }
+  }
+
+  const handleEvaluate = () => {
+    fetchEvaluatedResult()
   }
 
   useEffect(() => {
@@ -134,7 +138,12 @@ const EvaluationMain = () => {
           <Button type="primary" extendedSize onClick={handleEvaluate}>
             Evaluate
           </Button>
-          {isEvaluated && <EvaluatedResultTable data={evaluatedResult} />}
+          {isEvaluated && (
+            <EvaluatedResultTable
+              data={evaluatedResult}
+              refreshEvaluatedResult={fetchEvaluatedResult}
+            />
+          )}
         </S_FlexWrapper>
       </Spin>
     </Layout>
