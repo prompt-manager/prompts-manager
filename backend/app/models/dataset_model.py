@@ -14,4 +14,10 @@ datasets = Table(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     ),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    ),
 )

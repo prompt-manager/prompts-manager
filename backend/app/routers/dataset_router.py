@@ -351,6 +351,23 @@ async def update_dataset(
     if not update_data:
         raise HTTPException(status_code=400, detail="No update fields provided.")
 
+    # 이름 중복 체크 (이름이 변경되는 경우에만)
+    if "name" in update_data and update_data["name"] != existing_dataset.name:
+        duplicate_check = await database.fetch_one(
+            select(datasets).where(
+                datasets.c.name == update_data["name"],
+                datasets.c.id != dataset_id
+            )
+        )
+        if duplicate_check:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Dataset with name '{update_data['name']}' already exists."
+            )
+
+    # updated_at 필드 추가
+    update_data["updated_at"] = datetime.now(timezone.utc)
+
     # 업데이트 수행
     update_query = (
         update(datasets)
