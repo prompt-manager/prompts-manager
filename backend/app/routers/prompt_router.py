@@ -201,6 +201,10 @@ async def create_prompt(
 
     latest_version = await database.fetch_one(query_latest_version)
     new_version = latest_version.version + 1 if latest_version else 1
+    
+    # 첫 번째 프롬프트라면 자동으로 프로덕션 설정
+    is_first_prompt = latest_version is None
+    production_status = True if is_first_prompt else False
 
     now = datetime.now(timezone.utc)
 
@@ -210,7 +214,7 @@ async def create_prompt(
             node_name=prompt.node_name,
             content=prompt.content.model_dump(),
             message=prompt.message,
-            production=False,
+            production=production_status,
             version=new_version,
             created_at=now,
             updated_at=now,

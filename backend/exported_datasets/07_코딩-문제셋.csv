@@ -1,0 +1,5 @@
+Question,Answer
+두 수를 더하는 함수를 작성하세요,def add(a b): return a + b
+리스트에서 최댓값을 찾는 함수,def find_max(lst): return max(lst)
+문자열을 뒤집는 함수,def reverse_string(s): return s[::-1]
+팩토리얼을 계산하는 함수,def factorial(n): return 1 if n <= 1 else n * factorial(n-1)
