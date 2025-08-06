@@ -66,8 +66,8 @@ export interface DatasetsList {
 }
 
 export interface DatasetsListItem {
-  id: string | number
-  content: string
+  id?: string | number
+  content?: string
   name: string
   description: string
   created_at?: string
@@ -139,9 +139,9 @@ export interface EvaluationParams {
 }
 
 export interface EvaluationResults {
-  name: string
+  name?: string
   version: number | string
-  dataset_name: string
+  dataset_name?: string
   metric?: string
   score: number
   production?: boolean

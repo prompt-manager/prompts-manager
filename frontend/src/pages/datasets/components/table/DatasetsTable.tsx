@@ -11,7 +11,7 @@ import { S_FlexWrapper } from '../../../styles/Page.style'
 import { message } from 'antd'
 import { DatasetsListItem } from '../../../../types/api'
 import { convertDateTime } from '../../../../utils/convertDateTime'
-import { putDatasets } from '../../../../api/service/apiService'
+import { deleteDatasets, putDatasets } from '../../../../api/service/apiService'
 
 interface DatasetsTableProps {
   data: DatasetsListItem[] | undefined
@@ -21,6 +21,7 @@ interface DatasetsTableProps {
 
 const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTableProps) => {
   const [messageApi, contextHolder] = message.useMessage()
+  const [nodeNameValue, setNodeNameValue] = useState('')
 
   const [selectedRow, setSelectedRow] = useState<{
     id: string
@@ -28,9 +29,13 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
   } | null>(null)
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-  const fetchEditDatasets = async (params: DatasetsListItem) => {
+  const fetchEditDatasets = async (params: { id: string; name: string; description?: string }) => {
     try {
-      const response = await putDatasets(params)
+      const response = await putDatasets({
+        name: params.name,
+        description: params.description!,
+        id: params.id,
+      })
 
       if (response.status) {
         messageApi.open({
@@ -52,7 +57,29 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
     }
   }
 
-  const handleEdit = (record: DatasetsListItem) => {
+  const fetchDeleteDatasets = async (id: string | number) => {
+    try {
+      const response = await deleteDatasets(id)
+
+      if (response.status) {
+        messageApi.open({
+          type: 'success',
+          content: 'Delete successful.',
+        })
+
+        refreshDatasets()
+      } else {
+        messageApi.open({
+          type: 'error',
+          content: 'Deletion failed.',
+        })
+      }
+    } catch (e) {
+      console.error('[ERROR] fetchDeleteDatasets', e)
+    }
+  }
+
+  const handleEdit = (record: { id: string; name: string; description?: string }) => {
     fetchEditDatasets(record)
   }
 
@@ -62,17 +89,7 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
 
   const handleClickDelete = () => {
     setOpenDeleteModal(false)
-    // Delete
-    // selectedRow.key 에 해당하는 row 삭제
-
-    messageApi.open({
-      type: 'success',
-      content: 'Delete successful.',
-    })
-    // messageApi.open({
-    //     type: 'error',
-    //     content: 'Deletion failed.',
-    // })
+    fetchDeleteDatasets(selectedRow?.id!)
   }
 
   const handleOpenDeleteModal = () => {
@@ -90,11 +107,19 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
       ellipsis: true,
       render: (text: string, record: any) => {
         const isEditing = record.id === selectedRow?.id
+        const handleChangeNodeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+          setNodeNameValue(e.target.value)
+        }
 
         return isEditing ? (
           <S_FlexWrapper alignItems="center">
-            <Input defaultValue={text} width="160px" />
-            <Button type="text" onClick={() => handleEdit(record)}>
+            <Input defaultValue={text} width="160px" onChange={handleChangeNodeName} />
+            <Button
+              type="text"
+              onClick={() =>
+                handleEdit({ name: nodeNameValue, id: record.id, description: record.description })
+              }
+            >
               <Tooltip title="apply">
                 <CheckOutlined />
               </Tooltip>
@@ -155,13 +180,21 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
       title: '',
       dataIndex: 'delete',
       width: '100px',
-      render: () => (
-        <Button type="text" onClick={handleOpenDeleteModal}>
-          <Tooltip title="delete">
-            <DeleteOutlined />
-          </Tooltip>
-        </Button>
-      ),
+      render: (_: string, record: any) => {
+        return (
+          <Button
+            type="text"
+            onClick={() => {
+              handleOpenDeleteModal()
+              setSelectedRow(record)
+            }}
+          >
+            <Tooltip title="delete">
+              <DeleteOutlined />
+            </Tooltip>
+          </Button>
+        )
+      },
     },
   ]
 
