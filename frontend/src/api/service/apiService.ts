@@ -5,7 +5,6 @@ import {
   DATASETS_SEARCH,
   EVALUATIONS_METRIC,
   EVALUATIONS_RESULTS_TABLE,
-  EVALUATIONS_RUN,
   PROMPT_ENDPOINT,
   PROMPT_NODE,
   PROMPT_NODES,
@@ -80,3 +79,6 @@ export const putDatasets = (params: DatasetsListItem): Promise<AxiosResponse<str
     name: params.name,
     description: params.description,
   })
+
+export const deleteDatasets = (id: string | number): Promise<AxiosResponse<DeleteResponse>> =>
+  axiosCreate.delete<DeleteResponse>(`${DATASETS_ENDPOINT}${id}`)
