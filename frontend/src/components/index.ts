@@ -3,6 +3,7 @@ export { default as Layout } from './layout/layout/Layout'
 export { default as Sider } from './layout/sider/Sider'
 export { default as Header } from './layout/header/Header'
 export { default as Content } from './layout/content/Content'
+export { default as Divider } from './layout/divider/Divider'
 // export { default as Footer } from './layout/Footer'
 // export { Row, Col } from './layout/Grid'
 
