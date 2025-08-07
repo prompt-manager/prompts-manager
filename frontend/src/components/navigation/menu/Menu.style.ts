@@ -2,7 +2,7 @@ import { Menu } from 'antd'
 import styled from 'styled-components'
 
 const S_Menu = styled(Menu)`
-    height: 100%;
+    //height: 100%;
     background-color: var(--background-content);
 
     .ant-menu-submenu-title {

@@ -3,11 +3,14 @@ import {
     FileTextOutlined,
     LikeOutlined,
     DatabaseOutlined,
+  MoonOutlined,
+    SunOutlined
 } from '@ant-design/icons'
 import { LayoutProps as AntLayoutProps, MenuProps } from 'antd'
 import S_Layout from './Layout.style'
-import { Sider, Content, Header, Menu } from '../../index'
+import { Sider, Content, Header, Menu, Switch } from '../../index'
 import { useNavigate } from 'react-router-dom'
+import { S_FlexWrapper } from '../../../pages/styles/Page.style'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
@@ -39,15 +42,26 @@ const Layout: React.FC<AntLayoutProps & LayoutProps> = ({
     const navigate = useNavigate()
 
     const [selectedMenuKey, setSelectedMenuKey] = useState<string>(menuKey)
+    const [isDark, setIsDark] = useState(() => {
+        return localStorage.getItem('theme') !== 'light'
+    })
 
     const handleClickMenu = (value: { key: string }) => {
         navigate(`/${value.key}`)
         setSelectedMenuKey(value.key)
     }
 
+    const toggleTheme = () => {
+        const newTheme = isDark ? 'light' : 'dark'
+        document.documentElement.setAttribute('data-theme', newTheme)
+        localStorage.setItem('theme', newTheme)
+        setIsDark(!isDark)
+    }
+
     return (
         <S_Layout {...props}>
-            <Sider>
+            <Sider
+            >
                 <Menu
                     // TODO Home에서 선택해서 들어온 key
                     defaultSelectedKeys={[menuKey]}
@@ -59,6 +73,13 @@ const Layout: React.FC<AntLayoutProps & LayoutProps> = ({
                     items={MenuItems}
                     onClick={handleClickMenu}
                 />
+                <S_FlexWrapper margin="24px 8px">
+                    <Switch
+                      checkedChildren={<SunOutlined />}
+                      unCheckedChildren={<MoonOutlined />}
+                      onChange={toggleTheme}
+                    />
+                </S_FlexWrapper>
             </Sider>
             <S_Layout>
                 <Header>{headerTitle}</Header>
