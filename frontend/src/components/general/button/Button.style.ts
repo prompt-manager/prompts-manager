@@ -10,12 +10,12 @@ const S_Button = styled(Button)<ExtendButtonProps>`
     // default
     &.ant-btn {
         background: transparent;
-        color: var(--blue-z-03);
-        border: 1px solid var(--blue-z-03);
+        color: var(--button);
+        border: 1px solid var(--button);
 
         &:hover {
-            border: 1px solid var(--yellow-z-01) !important;
-            color: var(--yellow-z-01) !important;
+            border: 1px solid var(--highlight) !important;
+            color: var(--highlight) !important;
             background: transparent !important;
         }
 
@@ -34,12 +34,12 @@ const S_Button = styled(Button)<ExtendButtonProps>`
 
     // primary
     &.ant-btn-primary {
-        background: var(--blue-z-03);
+        background: var(--button);
         color: var(--white);
         border: none;
 
         &:hover {
-            background: var(--yellow-z-01) !important;
+            background: var(--highlight) !important;
             color: var(--white) !important;
         }
     }
@@ -47,11 +47,11 @@ const S_Button = styled(Button)<ExtendButtonProps>`
     // text
     &.ant-btn-text {
         background: transparent;
-        color: var(--blue-z-03);
+        color: var(--button);
         border: none;
 
         &:hover {
-            color: var(--yellow-z-01);
+            color: var(--highlight);
             border: none !important;
         }
     }
@@ -60,10 +60,10 @@ const S_Button = styled(Button)<ExtendButtonProps>`
     &.ant-btn-link {
         border: none;
         background: transparent;
-        color: var(--blue-z-02);
+        color: var(--text-primary);
 
         &:hover {
-            color: var(--yellow-z-01);
+            color: var(--highlight);
             border: none !important;
             text-decoration: underline;
         }

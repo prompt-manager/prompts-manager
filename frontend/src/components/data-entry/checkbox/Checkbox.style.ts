@@ -5,12 +5,12 @@ import {CheckboxProps} from "antd";
 const S_Checkbox = styled(Checkbox)<CheckboxProps>`
     .ant-checkbox-inner {
         border-radius: var(--spacing-00) !important;
-        border-color: var(--blue-z-03);
+        border-color: var(--border-interactive);
     }
 
     .ant-checkbox-checked .ant-checkbox-inner {
-        background-color: var(--blue-z-03);
-        border-color: var(--blue-z-03);
+        background-color: var(--background-active);
+        border-color: var(--border-interactive);
     }
 
     .ant-checkbox-checked .ant-checkbox-inner::after {
@@ -18,13 +18,13 @@ const S_Checkbox = styled(Checkbox)<CheckboxProps>`
     }
 
     .ant-checkbox:hover .ant-checkbox-inner {
-        border-color: var(--yellow-z-01);
+        border-color: var(--highlight);
     }
 
     .ant-checkbox-checked:hover .ant-checkbox-inner {
-        background-color: var(--blue-z-03) !important;
+        background-color: var(--background-active) !important;
         opacity: 0.7;
-        border-color: var(--yellow-z-01);
+        border-color: var(--highlight);
     }
 `
 

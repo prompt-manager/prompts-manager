@@ -3,6 +3,12 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 
+const storedTheme = localStorage.getItem('theme')
+document.documentElement.setAttribute(
+  'data-theme',
+  storedTheme === 'light' ? 'light' : 'dark'
+)
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
     <React.StrictMode>

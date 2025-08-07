@@ -3,27 +3,27 @@ import styled from 'styled-components'
 
 const S_Drawer = styled(Drawer)<DrawerProps>`
     .ant-drawer-header {
-        background: var(--background-z-default) !important;
+        background: var(--background-content) !important;
         position: relative;
 
         .ant-drawer-close {
             position: absolute;
             right: 1.6rem;
             top: 1.6rem;
-            color: var(--blue-z-02);
+            color: var(--text-primary);
         }
 
         .ant-drawer-close {
-            color: var(--blue-z-02);
+            color: var(--text-primary);
         }
         .ant-drawer-title {
-            color: var(--blue-z-02);
+            color: var(--text-primary);
         }
     }
 
     .ant-drawer-body {
         background: var(--background);
-        color: var(--blue-z-02);
+        color: var(--text-primary);
         padding: 0;
     }
 `

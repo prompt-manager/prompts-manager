@@ -3,12 +3,12 @@ import styled from 'styled-components'
 
 const S_Timeline = styled(Timeline)<TimelineProps>`
     .ant-timeline-item-tail {
-        border-color: var(--green-z-01);
+        border-color: var(--border-primary);
     }
 
     .ant-timeline-item-head {
-        background-color: var(--blue-z-02);
-        border-color: var(--blue-z-03);
+        background-color: var(--blue-12);
+        border-color: var(--border-interactive);
     }
 
     .ant-timeline-item-content {

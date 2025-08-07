@@ -13,11 +13,11 @@ const S_Switch = styled(Switch)<SwitchProps>`
     }
 
     &.ant-switch-checked {
-        background-color: var(--blue-z-03); // 활성화 상태
+        background-color: var(--background-active); // 활성화 상태
     }
 
     &.ant-switch-checked:hover {
-        background-color: var(--blue-z-03) !important; 
+        background-color: var(--background-active) !important; 
         opacity: 0.7;
     }
 `

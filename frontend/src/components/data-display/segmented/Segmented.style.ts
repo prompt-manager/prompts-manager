@@ -10,12 +10,12 @@ const S_Segmented = styled(Segmented)<SegmentedProps>`
 }
 
     .ant-segmented-item:hover {
-        background-color: var(--yellow-z-01);
+        background-color: var(--highlight);
         color: var(--black);
     }
 
     .ant-segmented-item-selected {
-        background-color: var(--blue-z-03); 
+        background-color: var(--background-active); 
         color: var(--white);
         font-weight: bold;
     }

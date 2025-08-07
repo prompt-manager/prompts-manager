@@ -3,8 +3,8 @@ import {Layout} from "antd";
 
 const S_Layout = styled(Layout)`
     height: 100vh;
-    border: .1rem solid var(--green-z-01);
-    background: var(--background)
+    background: var(--background);
+    padding: var(--spacing-03);
 `
 S_Layout.displayName = 'S_Layout'
 

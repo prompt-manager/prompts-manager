@@ -13,9 +13,9 @@ const S_Table = styled(Table)<TableProps>`
 
   .ant-table-thead > tr > th {
     background-color: transparent;
-    color: var(--blue-z-02);
+    color: var(--text-primary);
     font-weight: bold;
-    border-bottom: 0.2rem solid var(--green-z-01);
+    border-bottom: 0.2rem solid var(--border-primary);
   }
 
   .ant-table-tbody .ant-table-placeholder {
@@ -30,7 +30,7 @@ const S_Table = styled(Table)<TableProps>`
   .ant-table-tbody > tr > td {
     background: transparent;
     color: var(--white);
-    border-bottom: 0.1rem solid var(--green-z-01);
+    border-bottom: 0.1rem solid var(--border-primary);
   }
 
   .ant-table-tbody > tr:hover > td {
@@ -43,7 +43,7 @@ const S_Table = styled(Table)<TableProps>`
       border: none;
 
       a {
-        color: var(--green-z-01);
+        color: var(--text-label);
       }
     }
 
@@ -52,7 +52,7 @@ const S_Table = styled(Table)<TableProps>`
 
       a {
         font-weight: 800;
-        color: var(--yellow-z-01);
+        color: var(--highlight);
       }
     }
 
@@ -62,7 +62,7 @@ const S_Table = styled(Table)<TableProps>`
       border: none;
 
       .ant-pagination-item-link {
-        color: var(--green-z-01);
+        color: var(--text-label);
         background: transparent;
         border: none;
       }

@@ -9,34 +9,34 @@ export const S_Upload = styled(Upload)<UploadProps>`
 
   .ant-upload.ant-upload-select {
     border-radius: var(--spacing-00) !important;
-    border-color: var(--blue-z-03);
+    border-color: var(--border-interactive);
   }
 
   .ant-upload.ant-upload-select:hover {
-    border-color: var(--yellow-z-01);
+    border-color: var(--highlight);
   }
 
   .ant-upload-list-item {
     border-radius: var(--spacing-01) !important;
-    border: 0.2rem solid var(--green-z-01);
+    border: 0.2rem solid var(--border-primary);
     padding: var(--spacing-02);
     height: 3.6rem !important;
-    color: var(--blue-z-02);
+    color: var(--text-primary);
     background: var(--background);
 
     &:hover {
-      border-color: var(--yellow-z-01);
+      border-color: var(--highlight);
       background: var(--background) !important;
       cursor: pointer;
     }
 
     svg {
-      color: var(--blue-z-03);
+      color: var(--background-active);
     }
   }
 
   .ant-upload-list-item:hover {
-    border-color: var(--yellow-z-01);
+    border-color: var(--highlight);
   }
 `
 S_Upload.displayName = 'S_Upload'
@@ -47,22 +47,22 @@ export const S_UploadContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 8rem;
-  border: 0.2rem dashed var(--green-z-01);
+  border: 0.2rem dashed var(--border-primary);
   border-radius: var(--radius-01);
   background: var(--background);
 
   &:hover {
     cursor: pointer;
-    color: var(--yellow-z-01);
-    border: 0.2rem dashed var(--yellow-z-01);
+    color: var(--highlight);
+    border: 0.2rem dashed var(--highlight);
 
     .anticon {
-      color: var(--yellow-z-01);
+      color: var(--highlight);
     }
   }
 
   .anticon {
-    color: var(--green-z-01);
+    color: var(--text-label);
     font-size: 2rem;
   }
 
@@ -76,11 +76,11 @@ export const S_UploadContainer = styled.div`
 
   .ant-form-item-has-error &:hover {
     cursor: pointer;
-    color: var(--yellow-z-01);
-    border: 0.2rem dashed var(--yellow-z-01);
+    color: var(--highlight);
+    border: 0.2rem dashed var(--highlight);
 
     .anticon {
-      color: var(--yellow-z-01);
+      color: var(--highlight);
     }
   }
 `

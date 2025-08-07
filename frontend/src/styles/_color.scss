@@ -16,11 +16,12 @@
   --on-color: var(--white);
   // background
   --background: var(--gray-02);
+  --background-content: var(--navy-02);
   --background-success: var(--green-02);
   --background-error: var(--red-02);
   --background-warning: var(--yellow-02);
   --background-info: var(--blue-02);
-  --background-active: var(--blue-02);
+  --background-active: var(--blue-10);
   --background-pending: var(--orange-02);
   --background-disable: var(--gray-02);
   --background-reverse: var(--gray-10);
@@ -32,22 +33,13 @@
   );
 
 
-  //TODO **정리하기
-  --blue-z-01: #2f4156;
-  --blue-z-02: #d5deef;
-  --blue-z-03: #8aaee0;
-  --blue-z-04: #395886;
-  --yellow-z-01: #e0bf8a;
-  --green-z-01: #567c8d;
+  // highlight
+  --highlight: var(--peach-01);
 
-  --background-z-default: var(--blue-z-01);
+
+  // disabled
   --disabled-input: var(--gray-03);
 
-
-
-
-
-  //TODO **
 
   //layer
   --layer-01: var(--gray-03);
@@ -61,8 +53,10 @@
   --layer-modal-filter: blur(3px);
 
   // text
-  --text-primary: var(--gray-10); //Primary text; Body copy;Headers;
-  --text-secondary: var(--gray-08); //Secondary text; Input labels;
+  --text-active: var(--blue-10);
+  --text-label: var(--geek-green-01);
+  --text-primary: var(--blue-12);
+  --text-secondary: var(--navy-01);
   --text-helper: var(--gray-05); //help text;
   --text-placeholder: var(--gray-07); //input, textarea placeholder;
   --text-disabled: var(--gray-05);
@@ -99,7 +93,7 @@
   --disable: var(--gray-05);
 
   //button
-  --button-primary: var(--blue-06);
+  --button: var(--blue-10);
   --button-primary-hover: var(--blue-07);
   --button-primary-active: var(--blue-05);
   --button-secondary: var(--gray-06);
@@ -111,9 +105,10 @@
   --button-danger-active: var(--red-05);
 
   //border
-  --border-interactive: var(--blue-05);
+  --border-primary: var(--navy-03);
+  --border-interactive: var(--blue-10);
   --border-divide: var(--gray-08);
-  --border-highlight: var(--gray-09);
+  //--border-highlight: var(--gray-09);
   --border-error: var(--red-05);
   --border-02: var(--gray-02); //border with --layer-01
   --border-03: var(--gray-03); //border with --layer-02
@@ -178,7 +173,9 @@
   --blue-07: #4b96f8;
   --blue-08: #6daaf1;
   --blue-09: #85b6ef;
-  --blue-10: #b0cff8;
+  --blue-10: #8aaee0;
+  --blue-11: #b0cff8;
+  --blue-12: #d5deef;
 
   // red
   --red-01: #3a0505;
@@ -287,7 +284,18 @@
   --cyan-09: #a0e2ec;
   --cyan-10: #c6f6f9;
 
-  //
+  // geekgreen
+  --geek-green-01: #567c8d;
+  --geek-green-02: #2f4156;
+
+  //  navy
+  --navy-01: #395886;
+  --navy-02: #445675;
+  --navy-03 :#35445E;
+  --navy-04: #1C2533;
+
+  // peach
+  --peach-01: #e0bf8a;
 }
 
 [data-theme='light'] {
@@ -379,7 +387,9 @@
   --blue-07: #3a68d9;
   --blue-08: #2c54b5;
   --blue-09: #1d3f90;
-  --blue-10: #0f2a6b;
+  --blue-10: #3a5edb;
+  --blue-11: #0f2a6b;
+  --blue-12: #1a2f6b;
 
   // red
   --red-01: #fff1f0;
@@ -476,4 +486,17 @@
   --cyan-08: #006d75;
   --cyan-09: #00474f;
   --cyan-10: #002329;
+
+  // geekgreen
+  --geek-green-01: #a3cfdc;
+  --geek-green-02: #d3e6f5;
+
+  //  navy
+  --navy-01: #7a94b8;
+  --navy-02: #b5c0d9;
+  --navy-03 :#a1b1c7;
+  --navy-04: #dee6f1;
+
+  // peach
+  --peach-01: #ffb347;
 }

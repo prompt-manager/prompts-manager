@@ -2,33 +2,33 @@ import { Menu } from 'antd'
 import styled from 'styled-components'
 
 const S_Menu = styled(Menu)`
-    height: 100%;
-    background-color: var(--background-z-default);
+    //height: 100%;
+    background-color: var(--background-content);
 
     .ant-menu-submenu-title {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
     }
 
     .ant-menu-submenu-selected > .ant-menu-submenu-title {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
         &:hover {
-            color: var(--yellow-z-01);
+            color: var(--highlight);
         }
     }
 
     .ant-menu-item {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
         &:hover {
-            color: var(--yellow-z-01) !important;
+            color: var(--highlight) !important;
         }
 
         &.ant-menu-item-selected {
-            color: var(--blue-z-04) !important;
+            color: var(--text-secondary) !important;
             font-weight: 800;
             border-radius: var(--radius-01);
 
             &:hover {
-                color: var(--yellow-z-01) !important;
+                color: var(--highlight) !important;
             }
         }
     }
