@@ -52,7 +52,7 @@ const S_Table = styled(Table)<TableProps>`
 
       a {
         font-weight: 800;
-        color: var(--yellow-z-01);
+        color: var(--highlight);
       }
     }
 

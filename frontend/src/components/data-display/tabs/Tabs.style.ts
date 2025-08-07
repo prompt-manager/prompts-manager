@@ -16,7 +16,7 @@ const S_Tabs = styled(Tabs)`
     }
         
         .ant-tabs-tab:hover .ant-tabs-tab-btn {
-                color: var(--yellow-z-01);
+                color: var(--highlight);
         }
     
 `

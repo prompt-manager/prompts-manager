@@ -14,7 +14,7 @@ export const S_Select = styled(Select)<ExtendedSelectProps>`
   &&:hover .ant-select-selector,
   &&.ant-select-focused .ant-select-selector,
   &&.ant-select-open .ant-select-selector {
-    border-color: var(--yellow-z-01) !important;
+    border-color: var(--highlight) !important;
     box-shadow: none !important;
   }
 

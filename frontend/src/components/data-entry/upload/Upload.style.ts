@@ -13,7 +13,7 @@ export const S_Upload = styled(Upload)<UploadProps>`
   }
 
   .ant-upload.ant-upload-select:hover {
-    border-color: var(--yellow-z-01);
+    border-color: var(--highlight);
   }
 
   .ant-upload-list-item {
@@ -25,7 +25,7 @@ export const S_Upload = styled(Upload)<UploadProps>`
     background: var(--background);
 
     &:hover {
-      border-color: var(--yellow-z-01);
+      border-color: var(--highlight);
       background: var(--background) !important;
       cursor: pointer;
     }
@@ -36,7 +36,7 @@ export const S_Upload = styled(Upload)<UploadProps>`
   }
 
   .ant-upload-list-item:hover {
-    border-color: var(--yellow-z-01);
+    border-color: var(--highlight);
   }
 `
 S_Upload.displayName = 'S_Upload'
@@ -53,11 +53,11 @@ export const S_UploadContainer = styled.div`
 
   &:hover {
     cursor: pointer;
-    color: var(--yellow-z-01);
-    border: 0.2rem dashed var(--yellow-z-01);
+    color: var(--highlight);
+    border: 0.2rem dashed var(--highlight);
 
     .anticon {
-      color: var(--yellow-z-01);
+      color: var(--highlight);
     }
   }
 
@@ -76,11 +76,11 @@ export const S_UploadContainer = styled.div`
 
   .ant-form-item-has-error &:hover {
     cursor: pointer;
-    color: var(--yellow-z-01);
-    border: 0.2rem dashed var(--yellow-z-01);
+    color: var(--highlight);
+    border: 0.2rem dashed var(--highlight);
 
     .anticon {
-      color: var(--yellow-z-01);
+      color: var(--highlight);
     }
   }
 `

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const S_Menu = styled(Menu)`
     height: 100%;
-    background-color: var(--background-z-default);
+    background-color: var(--background-content);
 
     .ant-menu-submenu-title {
         color: var(--blue-z-02);
@@ -12,14 +12,14 @@ const S_Menu = styled(Menu)`
     .ant-menu-submenu-selected > .ant-menu-submenu-title {
         color: var(--blue-z-02);
         &:hover {
-            color: var(--yellow-z-01);
+            color: var(--highlight);
         }
     }
 
     .ant-menu-item {
         color: var(--blue-z-02);
         &:hover {
-            color: var(--yellow-z-01) !important;
+            color: var(--highlight) !important;
         }
 
         &.ant-menu-item-selected {
@@ -28,7 +28,7 @@ const S_Menu = styled(Menu)`
             border-radius: var(--radius-01);
 
             &:hover {
-                color: var(--yellow-z-01) !important;
+                color: var(--highlight) !important;
             }
         }
     }

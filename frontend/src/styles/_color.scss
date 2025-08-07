@@ -33,16 +33,20 @@
 
 
   //TODO **정리하기
+  //--blue-z-01: #2f4156;
   --blue-z-01: #2f4156;
+  //--blue-z-02: #d5deef;
   --blue-z-02: #d5deef;
+  //--blue-z-03: #8aaee0;
   --blue-z-03: #8aaee0;
+  //--blue-z-04: #395886;
   --blue-z-04: #395886;
-  --yellow-z-01: #e0bf8a;
+  //--green-z-01: #567c8d;
   --green-z-01: #567c8d;
 
-  --background-z-default: var(--blue-z-01);
+  --background-content: var(--blue-z-01);
   --disabled-input: var(--gray-03);
-
+  --highlight: var(--orange-10);
 
 
 
@@ -113,7 +117,7 @@
   //border
   --border-interactive: var(--blue-05);
   --border-divide: var(--gray-08);
-  --border-highlight: var(--gray-09);
+  //--border-highlight: var(--gray-09);
   --border-error: var(--red-05);
   --border-02: var(--gray-02); //border with --layer-01
   --border-03: var(--gray-03); //border with --layer-02
@@ -213,7 +217,8 @@
   --orange-07: #f2a442;
   --orange-08: #f2b864;
   --orange-09: #f3d091;
-  --orange-10: #f6e2c3;
+  --orange-10: #e0bf8a;
+  --orange-11: #f6e2c3;
 
   // yellow
   --yellow-01: #342b04;

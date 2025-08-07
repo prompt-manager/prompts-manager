@@ -17,7 +17,7 @@ export const S_FormItem = styled(Form.Item)<ExtendedFormItemProps>`
         ${Typo_label_02}
 
         &.ant-form-item-required::before {
-            color: var(--yellow-z-01) !important;
+            color: var(--highlight) !important;
         }
     }
 `
@@ -31,7 +31,7 @@ export const S_FormList = styled(Form.List)<ExtendedFormItemProps>`
         ${Typo_label_02}
 
         &.ant-form-item-required::before {
-            color: var(--yellow-z-01) !important;
+            color: var(--highlight) !important;
         }
     }
 `

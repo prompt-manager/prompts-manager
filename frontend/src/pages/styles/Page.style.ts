@@ -64,10 +64,10 @@ export const S_UploadContainer = styled.div`
   color: var(--blue-z-02);
 
   &:hover {
-    border: 1px dashed var(--yellow-z-01);
+    border: 1px dashed var(--highlight);
     cursor: pointer;
     background: var(--blue-z-01);
-    color: var(--yellow-z-01);
+    color: var(--highlight);
   }
 `
 

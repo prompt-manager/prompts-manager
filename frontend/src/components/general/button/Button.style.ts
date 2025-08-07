@@ -14,8 +14,8 @@ const S_Button = styled(Button)<ExtendButtonProps>`
         border: 1px solid var(--blue-z-03);
 
         &:hover {
-            border: 1px solid var(--yellow-z-01) !important;
-            color: var(--yellow-z-01) !important;
+            border: 1px solid var(--highlight) !important;
+            color: var(--highlight) !important;
             background: transparent !important;
         }
 
@@ -39,7 +39,7 @@ const S_Button = styled(Button)<ExtendButtonProps>`
         border: none;
 
         &:hover {
-            background: var(--yellow-z-01) !important;
+            background: var(--highlight) !important;
             color: var(--white) !important;
         }
     }
@@ -51,7 +51,7 @@ const S_Button = styled(Button)<ExtendButtonProps>`
         border: none;
 
         &:hover {
-            color: var(--yellow-z-01);
+            color: var(--highlight);
             border: none !important;
         }
     }
@@ -63,7 +63,7 @@ const S_Button = styled(Button)<ExtendButtonProps>`
         color: var(--blue-z-02);
 
         &:hover {
-            color: var(--yellow-z-01);
+            color: var(--highlight);
             border: none !important;
             text-decoration: underline;
         }

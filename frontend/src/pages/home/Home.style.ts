@@ -16,7 +16,7 @@ export const S_HomeContent = styled.div`
     flex-direction: column;
     justify-content: center;
     gap: var(--spacing-08);
-    background-color: var(--background-z-default);
+    background-color: var(--background-content);
     padding: var(--spacing-08) var(--spacing-04);
     width: 72%;
     height: 60rem;
@@ -54,7 +54,7 @@ export const S_HomeMenu = styled.div`
 
     &:hover {
         color: var(--blue-z-04);
-        border: .4rem solid var(--yellow-z-01);
+        border: .4rem solid var(--highlight);
     }
 
 `

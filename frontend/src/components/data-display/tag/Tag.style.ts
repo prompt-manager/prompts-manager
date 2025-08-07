@@ -30,8 +30,8 @@ const S_Tag = styled(Tag)<StyleProps>`
           $clickable
             ? `&:hover {
                 cursor: pointer;
-                border-color: var(--yellow-z-01);
-                color: var(--yellow-z-01);
+                border-color: var(--highlight);
+                color: var(--highlight);
               }`
             : ''
         }
@@ -47,7 +47,7 @@ const S_Tag = styled(Tag)<StyleProps>`
           $clickable
             ? `&:hover {
                 cursor: pointer;
-                background: var(--yellow-z-01);
+                background: var(--highlight);
               }`
             : ''
         }

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const S_Drawer = styled(Drawer)<DrawerProps>`
     .ant-drawer-header {
-        background: var(--background-z-default) !important;
+        background: var(--background-content) !important;
         position: relative;
 
         .ant-drawer-close {

@@ -33,7 +33,7 @@ const S_Modal = styled(Modal)<ModalProps>`
 
             &:hover,
             &:focus {
-                background-color: var(--yellow-z-01);
+                background-color: var(--highlight);
                 border: none;
                 color: var(--white);
             }
@@ -46,8 +46,8 @@ const S_Modal = styled(Modal)<ModalProps>`
 
             &:hover {
                 background-color: transparent;
-                border-color: var(--yellow-z-01);
-                color: var(--yellow-z-01);
+                border-color: var(--highlight);
+                color: var(--highlight);
                 opacity: 0.8;
             }
         }

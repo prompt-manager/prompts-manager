@@ -18,13 +18,13 @@ const S_Checkbox = styled(Checkbox)<CheckboxProps>`
     }
 
     .ant-checkbox:hover .ant-checkbox-inner {
-        border-color: var(--yellow-z-01);
+        border-color: var(--highlight);
     }
 
     .ant-checkbox-checked:hover .ant-checkbox-inner {
         background-color: var(--blue-z-03) !important;
         opacity: 0.7;
-        border-color: var(--yellow-z-01);
+        border-color: var(--highlight);
     }
 `
 
