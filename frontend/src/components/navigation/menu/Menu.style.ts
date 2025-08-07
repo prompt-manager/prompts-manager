@@ -6,24 +6,24 @@ const S_Menu = styled(Menu)`
     background-color: var(--background-content);
 
     .ant-menu-submenu-title {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
     }
 
     .ant-menu-submenu-selected > .ant-menu-submenu-title {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
         &:hover {
             color: var(--highlight);
         }
     }
 
     .ant-menu-item {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
         &:hover {
             color: var(--highlight) !important;
         }
 
         &.ant-menu-item-selected {
-            color: var(--blue-z-04) !important;
+            color: var(--text-secondary) !important;
             font-weight: 800;
             border-radius: var(--radius-01);
 

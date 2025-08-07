@@ -13,7 +13,7 @@ export const S_FormItem = styled(Form.Item)<ExtendedFormItemProps>`
     width: ${({ width }) => width} !important;
 
     .ant-form-item-label > label {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
         ${Typo_label_02}
 
         &.ant-form-item-required::before {
@@ -27,7 +27,7 @@ export const S_FormList = styled(Form.List)<ExtendedFormItemProps>`
     width: ${({ width }) => width} !important;
 
     .ant-form-item-label > label {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
         ${Typo_label_02}
 
         &.ant-form-item-required::before {
@@ -39,6 +39,6 @@ S_FormList.displayName = 'S_FormList'
 
 export const S_FormTitle = styled.h1`
     ${Typo_heading_04_bold};
-    color: var(--green-z-01);
+    color: var(--text-label);
 `
 S_FormTitle.displayName = 'S_FormTitle'

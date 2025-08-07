@@ -10,8 +10,8 @@ const S_Button = styled(Button)<ExtendButtonProps>`
     // default
     &.ant-btn {
         background: transparent;
-        color: var(--blue-z-03);
-        border: 1px solid var(--blue-z-03);
+        color: var(--button);
+        border: 1px solid var(--button);
 
         &:hover {
             border: 1px solid var(--highlight) !important;
@@ -34,7 +34,7 @@ const S_Button = styled(Button)<ExtendButtonProps>`
 
     // primary
     &.ant-btn-primary {
-        background: var(--blue-z-03);
+        background: var(--button);
         color: var(--white);
         border: none;
 
@@ -47,7 +47,7 @@ const S_Button = styled(Button)<ExtendButtonProps>`
     // text
     &.ant-btn-text {
         background: transparent;
-        color: var(--blue-z-03);
+        color: var(--button);
         border: none;
 
         &:hover {
@@ -60,7 +60,7 @@ const S_Button = styled(Button)<ExtendButtonProps>`
     &.ant-btn-link {
         border: none;
         background: transparent;
-        color: var(--blue-z-02);
+        color: var(--text-primary);
 
         &:hover {
             color: var(--highlight);

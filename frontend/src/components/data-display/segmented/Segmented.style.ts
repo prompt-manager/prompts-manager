@@ -15,7 +15,7 @@ const S_Segmented = styled(Segmented)<SegmentedProps>`
     }
 
     .ant-segmented-item-selected {
-        background-color: var(--blue-z-03); 
+        background-color: var(--background-active); 
         color: var(--white);
         font-weight: bold;
     }

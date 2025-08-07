@@ -6,7 +6,7 @@ export const S_Select = styled(Select)<ExtendedSelectProps>`
   width: ${({ width }) => width} !important;
 
   && .ant-select-selector {
-    border: 1px solid var(--green-z-01);
+    border: 1px solid var(--border-primary);
     background: var(--background);
     color: var(--white);
   }
@@ -31,7 +31,7 @@ export const S_Select = styled(Select)<ExtendedSelectProps>`
     color: var(--text-disabled);
 
     &:hover {
-      border-color: var(--green-z-01);
+      border-color: var(--border-primary);
     }
   }
 
@@ -40,7 +40,7 @@ export const S_Select = styled(Select)<ExtendedSelectProps>`
   }
 
   && .ant-select-arrow {
-    color: var(--green-z-01);
+    color: var(--text-label);
   }
 
   &&.ant-select-status-error .ant-select-selector {

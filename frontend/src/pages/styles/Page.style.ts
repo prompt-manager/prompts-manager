@@ -45,34 +45,27 @@ export const S_DisabledContent = styled.div<DisabledContentProps>`
 `
 S_DisabledContent.displayName = 'S_DisabledContent'
 
-export const S_BoxContainer = styled.div`
-  display: flex;
-  border-radius: var(--radius-02);
-  background-color: var(--blue-z-02);
-  padding: var(--spacing-03);
-  overflow-x: scroll;
-`
 
 export const S_UploadContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-02);
-  border: 1px dashed var(--blue-z-02);
+  border: 1px dashed var(--border-interactive);
   width: 100%;
   height: 10rem;
-  color: var(--blue-z-02);
+  color: var(--text-primary);
 
   &:hover {
     border: 1px dashed var(--highlight);
     cursor: pointer;
-    background: var(--blue-z-01);
+    background: var(--background-content);
     color: var(--highlight);
   }
 `
 
 export const S_PromptMainTitle = styled.h1`
-  color: var(--blue-z-02);
+  color: var(--text-primary);
   ${Typo_heading_06_bold};
 `
 
@@ -91,7 +84,7 @@ export const S_PromptVersionList = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-06);
-  border-right: 0.1rem solid var(--green-z-01);
+  border-right: 0.1rem solid var(--border-primary);
   padding: var(--spacing-06);
 `
 

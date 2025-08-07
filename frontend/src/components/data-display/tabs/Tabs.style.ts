@@ -4,14 +4,14 @@ import {Typo_body_02, Typo_heading_02} from "../../../styles/constants/typogrphy
 
 const S_Tabs = styled(Tabs)`
     .ant-tabs-ink-bar {
-        background-color: var(--blue-z-03);
+        background-color: var(--background-active);
     }
     .ant-tabs-tab-active .ant-tabs-tab-btn {
-        color: var(--blue-z-03) !important;
+        color: var(--text-active) !important;
         ${Typo_heading_02};
     }
     .ant-tabs-tab-btn {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
         ${Typo_body_02};
     }
         

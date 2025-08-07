@@ -9,7 +9,7 @@ export const S_Upload = styled(Upload)<UploadProps>`
 
   .ant-upload.ant-upload-select {
     border-radius: var(--spacing-00) !important;
-    border-color: var(--blue-z-03);
+    border-color: var(--border-interactive);
   }
 
   .ant-upload.ant-upload-select:hover {
@@ -18,10 +18,10 @@ export const S_Upload = styled(Upload)<UploadProps>`
 
   .ant-upload-list-item {
     border-radius: var(--spacing-01) !important;
-    border: 0.2rem solid var(--green-z-01);
+    border: 0.2rem solid var(--border-primary);
     padding: var(--spacing-02);
     height: 3.6rem !important;
-    color: var(--blue-z-02);
+    color: var(--text-primary);
     background: var(--background);
 
     &:hover {
@@ -31,7 +31,7 @@ export const S_Upload = styled(Upload)<UploadProps>`
     }
 
     svg {
-      color: var(--blue-z-03);
+      color: var(--background-active);
     }
   }
 
@@ -47,7 +47,7 @@ export const S_UploadContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 8rem;
-  border: 0.2rem dashed var(--green-z-01);
+  border: 0.2rem dashed var(--border-primary);
   border-radius: var(--radius-01);
   background: var(--background);
 
@@ -62,7 +62,7 @@ export const S_UploadContainer = styled.div`
   }
 
   .anticon {
-    color: var(--green-z-01);
+    color: var(--text-label);
     font-size: 2rem;
   }
 

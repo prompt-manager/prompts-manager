@@ -3,27 +3,27 @@ import styled from 'styled-components'
 
 const S_Modal = styled(Modal)<ModalProps>`
     .ant-modal-content {
-        border: 0.2rem solid var(--green-z-01);
-        background-color: var(--blue-z-01);
-        color: var(--blue-z-04);
+        border: 0.2rem solid var(--border-primary);
+        background-color: var(--background-content);
+        color: var(--text-secondary);
     }
 
     .ant-modal-header {
-        background-color: var(--blue-z-01);
+        background-color: var(--background-content);
         border-bottom: none;
 
         .ant-modal-title {
-            color: var(--blue-z-02);
+            color: var(--text-primary);
         }
     }
 
     .ant-modal-body {
-        color: var(--blue-z-02);
+        color: var(--text-primary);
     }
 
     .ant-modal-footer {
         .ant-btn-primary {
-            background: var(--blue-z-03);
+            background: var(--background-active);
             color: var(--white);
             border: none;
 
@@ -41,8 +41,8 @@ const S_Modal = styled(Modal)<ModalProps>`
 
         .ant-btn-default {
             background-color: transparent;
-            border-color: var(--blue-z-03);
-            color: var(--blue-z-03);
+            border-color: var(--border-interactive);
+            color: var(--button);
 
             &:hover {
                 background-color: transparent;

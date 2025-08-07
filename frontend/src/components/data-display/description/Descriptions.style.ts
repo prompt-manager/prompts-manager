@@ -3,12 +3,12 @@ import { DescriptionsProps, Descriptions } from 'antd'
 
 const S_Descriptions = styled(Descriptions)<DescriptionsProps>`
     .ant-descriptions-view {
-        border: 1px solid var(--green-z-01) !important;
+        border: 1px solid var(--border-primary) !important;
         border-radius: var(--radius-01);
     }
 
     .ant-descriptions-row {
-        border-bottom: 1px solid var(--green-z-01) !important;
+        border-bottom: 1px solid var(--border-primary) !important;
 
         &:last-child {
             border-bottom: none;
@@ -16,8 +16,8 @@ const S_Descriptions = styled(Descriptions)<DescriptionsProps>`
     }
 
     .ant-descriptions-item-label {
-        border-right: 1px solid var(--green-z-01) !important;
-        color: var(--blue-z-02) !important;
+        border-right: 1px solid var(--border-primary) !important;
+        color: var(--text-primary) !important;
         width: 14rem;
         min-width: 14rem;
         max-width: 16rem;

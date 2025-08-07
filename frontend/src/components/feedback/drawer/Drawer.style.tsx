@@ -10,20 +10,20 @@ const S_Drawer = styled(Drawer)<DrawerProps>`
             position: absolute;
             right: 1.6rem;
             top: 1.6rem;
-            color: var(--blue-z-02);
+            color: var(--text-primary);
         }
 
         .ant-drawer-close {
-            color: var(--blue-z-02);
+            color: var(--text-primary);
         }
         .ant-drawer-title {
-            color: var(--blue-z-02);
+            color: var(--text-primary);
         }
     }
 
     .ant-drawer-body {
         background: var(--background);
-        color: var(--blue-z-02);
+        color: var(--text-primary);
         padding: 0;
     }
 `
