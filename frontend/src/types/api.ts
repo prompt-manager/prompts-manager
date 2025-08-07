@@ -1,3 +1,9 @@
+export interface ApiResponse<T = any> {
+  status: 'success' | 'error'
+  message?: string
+  data?: T
+}
+
 export type PromptType = 'system' | 'user' | 'assistant'
 
 export interface IPrompt {
@@ -148,4 +154,10 @@ export interface EvaluationResults {
   evaluation_id?: string | number
   prompt_id?: string | number
   dateset_id?: string | number
+}
+
+export interface CreateDatasets {
+  name: string
+  description?: string
+  file: File
 }

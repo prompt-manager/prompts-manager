@@ -29,13 +29,13 @@ const EvaluationMain = () => {
   const fetchPromptsNodes = async () => {
     const response = await getPromptsNodes()
 
-    if (response.status) {
+    if (response.status === 'success') {
       const options = response.data?.map((res) => ({
         label: res.node_name,
         value: res.node_name,
       }))
 
-      setNodeOptions(options)
+      setNodeOptions(options!)
     }
   }
 
@@ -43,13 +43,13 @@ const EvaluationMain = () => {
     try {
       const response = await getDatasetsList()
 
-      if (response.status) {
+      if (response.status === 'success') {
         const options = response.data?.map((res) => ({
           label: res.name,
           value: res.id,
         }))
 
-        setDatasetsOptions(options)
+        setDatasetsOptions(options!)
       }
     } catch (e) {
       console.error('[ERROR] fetchDatasetsList', e)
@@ -60,13 +60,13 @@ const EvaluationMain = () => {
     try {
       const response = await getEvaluationsMetrics()
 
-      if (response.status) {
+      if (response.status === 'success') {
         const options = response.data?.map((res) => ({
           label: res.name,
           value: res.key,
         }))
 
-        setMetricOptions(options)
+        setMetricOptions(options!)
       }
     } catch (e) {
       console.error('[ERROR] fetchEvaluationsMetrics', e)
@@ -83,7 +83,7 @@ const EvaluationMain = () => {
 
       const response = await getEvaluationsResultsTable(parameter)
 
-      if (response.status) {
+      if (response.status === 'success') {
         const data = response.data?.map((res) => ({
           version: res.version,
           prompt_id: res.prompt_id,

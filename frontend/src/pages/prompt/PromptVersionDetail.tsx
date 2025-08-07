@@ -48,7 +48,7 @@ const PromptVersionDetail = ({
         version,
       })
 
-      if (response.status) {
+      if (response.status === 'success') {
         messageApi.open({
           type: 'success',
           content: 'Delete successful.',
@@ -73,7 +73,7 @@ const PromptVersionDetail = ({
     try {
       const response = await postPromptsProduction(id)
 
-      if (response.status) {
+      if (response.status === 'success') {
         messageApi.open({
           type: 'success',
           content: 'It is set to production prompt.',

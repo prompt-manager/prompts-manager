@@ -26,13 +26,13 @@ const CreatePromptForm = ({ form, promptOrder, onChangePromptOrder }: CreateProm
   const fetchPromptsNodes = async () => {
     const response = await getPromptsNodes()
 
-    if (response.status) {
+    if (response.status === 'success') {
       const options = response.data?.map((res) => ({
         label: res.node_name,
         value: res.node_name,
       }))
 
-      setNodeOptions(options)
+      setNodeOptions(options!)
     }
   }
 

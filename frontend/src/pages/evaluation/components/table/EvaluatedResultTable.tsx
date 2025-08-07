@@ -1,7 +1,6 @@
-import { NodeData } from '../../../prompt/components/table/PromptManageTable'
-import { Button, Tag, Tooltip, Table, Select } from '../../../../components'
-import { DeleteOutlined, ThunderboltFilled, ThunderboltOutlined } from '@ant-design/icons'
-import React, { useState } from 'react'
+import { Button, Table } from '../../../../components'
+import { ThunderboltFilled, ThunderboltOutlined } from '@ant-design/icons'
+import React from 'react'
 import { message } from 'antd'
 import { postPromptsProduction } from '../../../../api/service/apiService'
 
@@ -17,7 +16,7 @@ const EvaluatedResultTable = ({ data, refreshEvaluatedResult }: EvaluatedResultT
     try {
       const response = await postPromptsProduction(id)
 
-      if (response.status) {
+      if (response.status === 'success') {
         messageApi.open({
           type: 'success',
           content: 'It is set to production prompt.',

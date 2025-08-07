@@ -25,7 +25,7 @@ const DatasetsContent = () => {
     try {
       const response = await getDatasets()
 
-      if (response.status) {
+      if (response.status === 'success') {
         setDatasetsList(response.data?.items as DatasetsListItem[])
       }
     } catch (e) {
@@ -37,7 +37,7 @@ const DatasetsContent = () => {
     try {
       const response = await getDatasetsSearch(keyword)
 
-      if (response.status) {
+      if (response.status === 'success') {
         setDatasetsList(response.data as DatasetsListItem[])
       }
     } catch (e) {

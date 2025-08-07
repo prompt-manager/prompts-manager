@@ -37,7 +37,7 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
         id: params.id,
       })
 
-      if (response.status) {
+      if (response.status === 'success') {
         messageApi.open({
           type: 'success',
           content: 'Edit Successfully.',
@@ -61,7 +61,7 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
     try {
       const response = await deleteDatasets(id)
 
-      if (response.status) {
+      if (response.status === 'success') {
         messageApi.open({
           type: 'success',
           content: 'Delete successful.',
@@ -102,7 +102,7 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
 
   const columns = [
     {
-      title: 'Node name',
+      title: 'Name',
       dataIndex: 'name',
       ellipsis: true,
       render: (text: string, record: any) => {

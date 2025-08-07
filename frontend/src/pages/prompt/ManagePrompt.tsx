@@ -17,7 +17,7 @@ const EditPromptPage = () => {
     try {
       const response = await getPromptsNodesSummary()
 
-      if (response.status) {
+      if (response.status === 'success') {
         setPromptList(response.data!)
       }
     } catch (e) {
