@@ -45,7 +45,7 @@ const CreatePrompt = () => {
 
       const response = await postPrompts(parameter)
 
-      if (response.status) {
+      if (response.status === 'success') {
         messageApi.open({
           type: 'success',
           content: 'Create Successfully.',

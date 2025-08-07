@@ -32,7 +32,7 @@ const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptMana
     try {
       const response = await getPromptsNode(nodeName)
 
-      if (response.status) {
+      if (response.status === 'success') {
         setNodeDetail(response.data!)
       }
     } catch (e) {
@@ -44,7 +44,7 @@ const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptMana
     try {
       const response = await deletePromptsAllNodeName(selectedRow?.node_name || '')
 
-      if (response.status) {
+      if (response.status === 'success') {
         setOpenDeleteModal(false)
 
         messageApi.open({

@@ -1,14 +1,16 @@
-import { Button, Tooltip, Search, Modal, Input } from '../../components'
+import { Button, Tooltip, Search, Modal, Form } from '../../components'
 import { S_FlexWrapper } from '../styles/Page.style'
 import DatasetsTable from './components/table/DatasetsTable'
 import { PlusOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import NewDataSetsForm from './components/form/NewDataSetsForm'
 import { message } from 'antd'
-import { getDatasets, getDatasetsSearch } from '../../api/service/apiService'
-import { DatasetsList, DatasetsListItem } from '../../types/api'
+import { getDatasets, getDatasetsSearch, postDatasets } from '../../api/service/apiService'
+import { CreateDatasets, DatasetsListItem } from '../../types/api'
 
 const DatasetsContent = () => {
+  const [form] = Form.useForm()
+
   const [messageApi, contextHolder] = message.useMessage()
   const [openModal, setOpenModal] = useState<boolean>(false)
 
@@ -17,11 +19,13 @@ const DatasetsContent = () => {
 
   const [datasetsList, setDatasetsList] = useState<DatasetsListItem[] | undefined>(undefined)
 
+  const [file, setFile] = useState<File | null>(null)
+
   const fetchDatasets = async () => {
     try {
       const response = await getDatasets()
 
-      if (response.status) {
+      if (response.status === 'success') {
         setDatasetsList(response.data?.items as DatasetsListItem[])
       }
     } catch (e) {
@@ -33,11 +37,49 @@ const DatasetsContent = () => {
     try {
       const response = await getDatasetsSearch(keyword)
 
-      if (response.status) {
+      if (response.status === 'success') {
         setDatasetsList(response.data as DatasetsListItem[])
       }
     } catch (e) {
       console.error('[ERROR] fetchDatasetsSearch', e)
+    }
+  }
+
+  const fetchCreateDatasets = async () => {
+    try {
+      const values = await form.validateFields()
+
+      const payload = {
+        name: values.name,
+        description: values.description || '',
+        file,
+      }
+
+      const response = await postDatasets(payload as CreateDatasets)
+
+      if (response.status === 'success') {
+        if (response.message) {
+          messageApi.open({
+            type: 'error',
+            content: response.message,
+          })
+        } else {
+          messageApi.open({
+            type: 'success',
+            content: 'Create Successfully.',
+          })
+
+          handleCloseModal()
+          fetchDatasets()
+        }
+      } else {
+        messageApi.open({
+          type: 'error',
+          content: 'Creation failed.',
+        })
+      }
+    } catch (e) {
+      console.error('[ERROR] handleUpload csv', e)
     }
   }
 
@@ -54,30 +96,25 @@ const DatasetsContent = () => {
   }
 
   const handleClickNewDatasets = () => {
-    // open modal
     setOpenModal(true)
   }
 
   const handleCreateDatasets = () => {
-    setOpenModal(false)
-
-    // Create
-    messageApi.open({
-      type: 'success',
-      content: 'Create Successfully.',
-    })
-    // messageApi.open({
-    //     type: 'error',
-    //     content: 'Creation failed.',
-    // })
+    fetchCreateDatasets()
   }
 
   const handleCloseModal = () => {
     setOpenModal(false)
+    form.resetFields()
+    setFile(null)
   }
 
   const handleChangePage = (page: number) => {
     setPageNumber(page)
+  }
+
+  const handleSetFile = (value: File | null) => {
+    setFile(value)
   }
 
   useEffect(() => {
@@ -95,7 +132,7 @@ const DatasetsContent = () => {
           onOk={handleCreateDatasets}
           onCancel={handleCloseModal}
         >
-          <NewDataSetsForm />
+          <NewDataSetsForm form={form} file={file} onSetFile={handleSetFile} />
         </Modal>
       )}
       <S_FlexWrapper flexDirection="column" gap={8}>

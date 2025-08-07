@@ -12,6 +12,8 @@ import {
   PROMPTS_DELETE_ALL,
 } from './apiEndpoint'
 import {
+  ApiResponse,
+  CreateDatasets,
   DatasetsList,
   DatasetsListItem,
   DeleteNodeVersion,
@@ -27,12 +29,12 @@ import {
 import { AxiosResponse } from 'axios'
 
 // Prompt
-export const getPromptsNodes = (): Promise<AxiosResponse<PromptNodes[]>> =>
-  axiosCreate.get<PromptNodes[]>(PROMPT_NODES)
-export const getPromptsNodesSummary = (): Promise<AxiosResponse<PromptNodeSummary[]>> =>
-  axiosCreate.get<PromptNodeSummary[]>(PROMPT_NODES_SUMMARY)
-export const getPromptsNode = (nodeName: string): Promise<AxiosResponse<PromptsResponse[]>> =>
-  axiosCreate.get<PromptsResponse[]>(`${PROMPT_NODE}/${nodeName}`)
+export const getPromptsNodes = (): Promise<ApiResponse<PromptNodes[]>> =>
+  axiosCreate.get(PROMPT_NODES)
+export const getPromptsNodesSummary = (): Promise<ApiResponse<PromptNodeSummary[]>> =>
+  axiosCreate.get(PROMPT_NODES_SUMMARY)
+export const getPromptsNode = (nodeName: string): Promise<ApiResponse<PromptsResponse[]>> =>
+  axiosCreate.get(`${PROMPT_NODE}/${nodeName}`)
 
 export const postPrompts = (params: {
   node_name: any
@@ -42,43 +44,55 @@ export const postPrompts = (params: {
     assistant: { prompt: string | null; order: number | null }
     user: { prompt: string | null; order: number | null }
   }
-}): Promise<AxiosResponse<PromptsResponse>> =>
-  axiosCreate.post<PromptsResponse>(PROMPT_ENDPOINT, params)
+}): Promise<ApiResponse<PromptsResponse>> => axiosCreate.post(PROMPT_ENDPOINT, params)
 export const postPromptsProduction = (
   promptIds: string | number
-): Promise<AxiosResponse<PromptsResponse>> =>
-  axiosCreate.post<PromptsResponse>(`${PROMPT_ENDPOINT}/${promptIds}/production`)
+): Promise<ApiResponse<PromptsResponse>> =>
+  axiosCreate.post(`${PROMPT_ENDPOINT}/${promptIds}/production`)
 
-export const deletePromptsAllNodeName = (nodeName: string) =>
+export const deletePromptsAllNodeName = (nodeName: string): Promise<ApiResponse<DeleteResponse>> =>
   axiosCreate.delete(`${PROMPTS_DELETE_ALL}/${nodeName}`)
 export const deletePromptsNodeVersion = (
   params: DeleteNodeVersion
-): Promise<AxiosResponse<DeleteResponse>> =>
-  axiosCreate.delete<DeleteResponse>(`${PROMPT_NODE}/${params.node_name}/version/${params.version}`)
+): Promise<ApiResponse<DeleteResponse>> =>
+  axiosCreate.delete(`${PROMPT_NODE}/${params.node_name}/version/${params.version}`)
 
 // Evaluation
-export const getEvaluationsMetrics = (): Promise<AxiosResponse<EvaluationsMetrics[]>> =>
-  axiosCreate.get<EvaluationsMetrics[]>(EVALUATIONS_METRIC)
+export const getEvaluationsMetrics = (): Promise<ApiResponse<EvaluationsMetrics[]>> =>
+  axiosCreate.get(EVALUATIONS_METRIC)
 export const getEvaluationsResultsTable = (
   params: EvaluationParams
-): Promise<AxiosResponse<EvaluationResults[]>> =>
-  axiosCreate.get<EvaluationResults[]>(
+): Promise<ApiResponse<EvaluationResults[]>> =>
+  axiosCreate.get(
     `${EVALUATIONS_RESULTS_TABLE}?node_name=${params.node_name}&dataset_id=${params.dataset_id}&metric_name=${params.metric_name}`
   )
 
 // Datasets
-export const getDatasets = (): Promise<AxiosResponse<DatasetsList>> =>
-  axiosCreate.get<DatasetsList>(DATASETS_ENDPOINT)
-export const getDatasetsList = (): Promise<AxiosResponse<DatasetsList[]>> =>
-  axiosCreate.get<DatasetsList[]>(DATASETS_LIST)
-export const getDatasetsSearch = (keyword: string): Promise<AxiosResponse<DatasetsListItem[]>> =>
-  axiosCreate.get<DatasetsListItem[]>(`${DATASETS_SEARCH}?query=${keyword}`)
+export const getDatasets = (): Promise<ApiResponse<DatasetsList>> =>
+  axiosCreate.get(DATASETS_ENDPOINT)
+export const getDatasetsList = (): Promise<ApiResponse<DatasetsList[]>> =>
+  axiosCreate.get(DATASETS_LIST)
+export const getDatasetsSearch = (keyword: string): Promise<ApiResponse<DatasetsListItem[]>> =>
+  axiosCreate.get(`${DATASETS_SEARCH}?query=${keyword}`)
 
-export const putDatasets = (params: DatasetsListItem): Promise<AxiosResponse<string>> =>
-  axiosCreate.put<string>(`${DATASETS_ENDPOINT}${params.id}`, {
+export const postDatasets = (params: CreateDatasets): Promise<ApiResponse<string>> => {
+  const formData = new FormData()
+  formData.append('name', params.name)
+  if (params.description) formData.append('description', params.description)
+  formData.append('file', params.file)
+
+  return axiosCreate.post(DATASETS_ENDPOINT, params, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+}
+
+export const putDatasets = (params: DatasetsListItem): Promise<ApiResponse<string>> =>
+  axiosCreate.put(`${DATASETS_ENDPOINT}${params.id}`, {
     name: params.name,
     description: params.description,
   })
 
-export const deleteDatasets = (id: string | number): Promise<AxiosResponse<DeleteResponse>> =>
-  axiosCreate.delete<DeleteResponse>(`${DATASETS_ENDPOINT}${id}`)
+export const deleteDatasets = (id: string | number): Promise<ApiResponse<DeleteResponse>> =>
+  axiosCreate.delete(`${DATASETS_ENDPOINT}${id}`)
