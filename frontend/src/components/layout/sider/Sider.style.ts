@@ -9,18 +9,22 @@ export const S_Sider = styled(Layout.Sider)<SiderProps>`
     //top: 0;
     //bottom: 0;
     height: 100%;
-    border-right: 1px solid var(--border-default);
     
     &.ant-layout-sider {
-        background: var(--background-content);
+        min-width: 27.5rem !important;
+        background: var(--background);
+        padding: var(--spacing-05);
 
         .ant-layout-sider-children {
-            background: transparent;
+            height: 40rem;
+            background: var(--background-content);
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             justify-content: space-between;
-            margin-bottom: var(--spacing-08);
+            margin: var(--spacing-13) 0;
+            padding: var(--spacing-04);
+            border-radius: var(--radius-03);
         }
     }
 `

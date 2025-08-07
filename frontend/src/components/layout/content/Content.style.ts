@@ -5,7 +5,7 @@ export const S_Content = styled(Layout.Content)`
     position: relative;
     flex: 1;
     min-height: initial;
-    padding: var(--spacing-05);
+    padding: var(--spacing-10);
     background: var(--background);
     color: black;
     overflow: auto;

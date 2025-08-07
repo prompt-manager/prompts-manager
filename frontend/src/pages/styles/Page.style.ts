@@ -1,10 +1,9 @@
 import styled from 'styled-components'
 import {
-  Typo_body_02,
+  Typo_body_02, Typo_heading_01,
   Typo_heading_03,
   Typo_heading_06_bold,
 } from '../../styles/constants/typogrphy'
-import { Button } from '../../components'
 
 export interface FlexProps {
   flexDirection?: 'column' | 'row'
@@ -128,4 +127,17 @@ export const S_PromptVersionDetailContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-04);
+`
+
+export const S_ThemeSwitch = styled.div`
+    width: 100%;
+    height: 4.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-03);
+    color: var(--text-primary);
+    background: var(--navy-03);
+    border-radius: var(--radius-02);
+    ${Typo_heading_01};
 `

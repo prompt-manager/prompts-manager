@@ -3,14 +3,16 @@ import {
     FileTextOutlined,
     LikeOutlined,
     DatabaseOutlined,
-  MoonOutlined,
-    SunOutlined
+    SunOutlined,
+    BulbOutlined,
+    PlusOutlined,
+    EditOutlined
 } from '@ant-design/icons'
 import { LayoutProps as AntLayoutProps, MenuProps } from 'antd'
 import S_Layout from './Layout.style'
-import { Sider, Content, Header, Menu, Switch } from '../../index'
+import { Sider, Content, Header, Menu, Switch, Divider } from '../../index'
 import { useNavigate } from 'react-router-dom'
-import { S_FlexWrapper } from '../../../pages/styles/Page.style'
+import { S_FlexWrapper, S_ThemeSwitch } from '../../../pages/styles/Page.style'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
@@ -25,8 +27,8 @@ const MenuItems: MenuItem[] = [
         icon: <FileTextOutlined />,
         label: 'Prompt',
         children: [
-            { key: 'prompt/create', label: 'Create Prompt' },
-            { key: 'prompt/manage', label: 'Manage Prompt' },
+            { key: 'prompt/create', icon: <PlusOutlined />, label: 'Create Prompt' },
+            { key: 'prompt/manage', icon: <EditOutlined />, label: 'Manage Prompt' },
         ],
     },
     { key: 'evaluation', icon: <LikeOutlined />, label: 'Evaluation' },
@@ -73,12 +75,17 @@ const Layout: React.FC<AntLayoutProps & LayoutProps> = ({
                     items={MenuItems}
                     onClick={handleClickMenu}
                 />
-                <S_FlexWrapper margin="24px 8px">
-                    <Switch
-                      checkedChildren={<SunOutlined />}
-                      unCheckedChildren={<MoonOutlined />}
-                      onChange={toggleTheme}
-                    />
+                <S_FlexWrapper flexDirection="column" width="100%">
+                    <Divider />
+                    <S_ThemeSwitch>
+                        <BulbOutlined />Theme Mode
+                        <Switch
+                          checked={!isDark}
+                          checkedChildren={<SunOutlined />}
+                          unCheckedChildren={<SunOutlined />}
+                          onChange={toggleTheme}
+                        />
+                    </S_ThemeSwitch>
                 </S_FlexWrapper>
             </Sider>
             <S_Layout>

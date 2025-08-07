@@ -16,7 +16,7 @@
   --on-color: var(--white);
   // background
   --background: var(--gray-02);
-  --background-content: var(--geek-green-02);
+  --background-content: var(--navy-02);
   --background-success: var(--green-02);
   --background-error: var(--red-02);
   --background-warning: var(--yellow-02);
@@ -105,7 +105,7 @@
   --button-danger-active: var(--red-05);
 
   //border
-  --border-primary: var(--geek-green-01);
+  --border-primary: var(--navy-03);
   --border-interactive: var(--blue-10);
   --border-divide: var(--gray-08);
   //--border-highlight: var(--gray-09);
@@ -290,6 +290,9 @@
 
   //  navy
   --navy-01: #395886;
+  --navy-02: #445675;
+  --navy-03 :#35445E;
+  --navy-04: #1C2533;
 
   // peach
   --peach-01: #e0bf8a;
@@ -490,6 +493,9 @@
 
   //  navy
   --navy-01: #7a94b8;
+  --navy-02: #b5c0d9;
+  --navy-03 :#a1b1c7;
+  --navy-04: #dee6f1;
 
   // peach
   --peach-01: #ffb347;
