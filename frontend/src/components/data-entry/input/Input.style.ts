@@ -6,7 +6,7 @@ export const S_Input = styled(Input)`
   width: ${({ width }) => width} !important;
 
   &.ant-input {
-    background: var(--background);
+    background: var(--background) !important;
     border: 1px solid var(--green-z-01);
     color: var(--white);
 
@@ -76,7 +76,7 @@ export const S_Input = styled(Input)`
   }
 
   &.ant-input-status-error {
-    background: transparent !important;
+    background: transparent;
     border-color: var(--border-error);
   }
 `
@@ -119,7 +119,7 @@ export const S_TextArea = styled(Input.TextArea)<ExtendedTextAreaProps>`
   }
 
   &.ant-input-status-error {
-    background: transparent !important;
+    background: transparent;
     border-color: var(--error);
   }
 `
