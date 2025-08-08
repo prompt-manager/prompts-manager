@@ -57,7 +57,7 @@ const NodeDetailDrawer = ({
   }, [nodeDetail])
 
   return (
-    <Drawer open={openDrawer} title={title} size="large" onClose={onClose}>
+    <Drawer open={openDrawer} title={title} sizeType="md" onClose={onClose}>
       <S_FlexWrapper flexDirection="row" height="100%">
         <PromptVersionList
           defaultProduction={defaultProduction}

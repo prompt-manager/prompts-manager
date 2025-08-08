@@ -43,7 +43,9 @@ const PromptList = ({
   return (
     <S_PromptVersion onClick={handleClick} isSelected={isSelected}>
       <S_FlexWrapper gap={8} justifyContent="space-between">
-        <Tag type="outline">ver.{version}</Tag>
+        <Tag type="outline" color="var(--blue-12)">
+          ver.{version}
+        </Tag>
         {isProduction && <S_ProductionState>⚡️ production</S_ProductionState>}
       </S_FlexWrapper>
       <S_Helper>{date}</S_Helper>

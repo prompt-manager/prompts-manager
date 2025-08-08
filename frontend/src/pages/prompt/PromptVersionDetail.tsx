@@ -161,7 +161,9 @@ const PromptVersionDetail = ({
         <S_PromptVersionDetailHeader>
           <S_FlexWrapper width="100%" alignItems="center" justifyContent="space-between">
             <S_FlexWrapper alignItems="center">
-              <Tag type="outline">ver.{version}</Tag>
+              <Tag type="outline" color="var(--blue-12)">
+                ver.{version}
+              </Tag>
               <Tooltip title="Production">
                 <Button type="text" onClick={() => handleClickProduction(id)}>
                   {isDefaultProduction ? <ThunderboltFilled /> : <ThunderboltOutlined />}

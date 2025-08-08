@@ -69,7 +69,7 @@ const CreatePrompt = () => {
     <>
       {contextHolder}
       <Layout menuKey="prompt/create" headerTitle={<span>Create Prompt</span>}>
-        <S_FlexWrapper flexDirection="column" gap={16}>
+        <S_FlexWrapper width="50rem" flexDirection="column" gap={16}>
           <CreatePromptForm
             form={form}
             promptOrder={promptOrder}
