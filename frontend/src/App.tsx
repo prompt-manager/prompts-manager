@@ -8,10 +8,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './styles/base.scss'
 import CreatePrompt from './pages/prompt/CreatePrompt'
 import EditPromptPage from './pages/prompt/ManagePrompt'
+import { GlobalStyle } from './components/data-entry/select/Select.style'
 
 function App() {
   return (
     <>
+      <GlobalStyle />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />

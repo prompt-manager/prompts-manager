@@ -1,12 +1,14 @@
 import { Select } from 'antd'
 import styled from 'styled-components'
 import { ExtendedSelectProps } from './Select'
+import { createGlobalStyle } from 'styled-components'
 
 export const S_Select = styled(Select)<ExtendedSelectProps>`
   width: ${({ width }) => width} !important;
 
   && .ant-select-selector {
-    border: 1px solid var(--border-primary);
+    border: 0.2rem solid var(--border-primary);
+    border-radius: var(--radius-02);
     background: var(--background);
     color: var(--white);
   }
@@ -49,3 +51,18 @@ export const S_Select = styled(Select)<ExtendedSelectProps>`
   }
 `
 S_Select.displayName = 'S_Select'
+
+export const GlobalStyle = createGlobalStyle`
+  .ant-select-dropdown {
+    background-color: var(--layer-04) !important;
+    color: white !important;
+  }
+
+  .ant-select-item-option {
+    color: white !important;
+
+    &:hover {
+      background-color: var(--highlight) !important;
+    }
+  }
+`
