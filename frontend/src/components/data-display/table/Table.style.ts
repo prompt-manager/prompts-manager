@@ -29,7 +29,7 @@ const S_Table = styled(Table)<TableProps>`
 
   .ant-table-tbody > tr > td {
     background: transparent;
-    color: var(--white);
+    color: var(--text-primary);
     border-bottom: 0.1rem solid var(--border-primary);
   }
 

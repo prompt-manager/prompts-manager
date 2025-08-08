@@ -45,6 +45,7 @@
   --layer-01: var(--gray-03);
   --layer-02: var(--gray-04);
   --layer-03: var(--gray-05);
+  --layer-04: var(--navy-00);
   --layer-01-hover: var(--gray-02-hover);
   --layer-02-hover: var(--gray-03-hover);
   --layer-03-hover: var(--gray-04-hover);
@@ -133,6 +134,9 @@
                   #80848b 48.43%,
                   rgba(53, 53, 53, 0.28) 99.98%
   );
+
+  // tag {
+  --tag-primary: var(--navy-03);
 
   //-------------------------------------------------------------------------
   // BASIC COLOR
@@ -289,6 +293,7 @@
   --geek-green-02: #2f4156;
 
   //  navy
+  --navy-00 :#a1b1c7;
   --navy-01: #395886;
   --navy-02: #445675;
   --navy-03 :#35445E;
@@ -386,8 +391,8 @@
   --blue-06: #437aff;
   --blue-07: #3a68d9;
   --blue-08: #2c54b5;
-  --blue-09: #1d3f90;
-  --blue-10: #3a5edb;
+  --blue-09: #3a5edb;
+  --blue-10: #1d3f90;
   --blue-11: #0f2a6b;
   --blue-12: #1a2f6b;
 
@@ -492,11 +497,12 @@
   --geek-green-02: #d3e6f5;
 
   //  navy
+  --navy-00: #1C2533;
   --navy-01: #7a94b8;
   --navy-02: #b5c0d9;
   --navy-03 :#a1b1c7;
   --navy-04: #dee6f1;
 
   // peach
-  --peach-01: #ffb347;
+  //--peach-01: #ffb347;
 }

@@ -126,7 +126,7 @@ const EvaluationMain = () => {
       }
     >
       <Spin spinning={evaluationLoading}>
-        <S_FlexWrapper flexDirection="column" gap={16}>
+        <S_FlexWrapper width="50rem" flexDirection="column" gap={16}>
           <EvaluationForm
             form={form}
             options={{

@@ -92,6 +92,7 @@ const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptMana
     {
       title: 'Node name',
       dataIndex: 'node_name',
+      width: '200px',
       ellipsis: true,
       render: (text: string, record: PromptNodeSummary) => (
         <Tag fullText={text} width="10rem" onClick={() => handleClickNodeName(record)}>
@@ -101,11 +102,13 @@ const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptMana
     },
     {
       title: 'Prompt count',
+      width: '200px',
       dataIndex: 'prompt_count',
     },
     {
       title: 'Latest Version Created At',
       dataIndex: 'latest_created_at',
+      width: '300px',
       ellipsis: true,
       render: (text: string) => (
         <Tooltip title={text} placement="topLeft">
@@ -119,7 +122,9 @@ const PromptManageTable = ({ data, onChangePage, refreshPromptList }: PromptMana
       width: '100px',
       render: (_: string, record: PromptNodeSummary) => (
         <Button type="text" onClick={() => handleClickDelete(record)}>
-          <DeleteOutlined />
+          <Tooltip title="Delete">
+            <DeleteOutlined />
+          </Tooltip>
         </Button>
       ),
     },

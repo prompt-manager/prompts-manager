@@ -104,6 +104,7 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
     {
       title: 'Name',
       dataIndex: 'name',
+      width: 120,
       ellipsis: true,
       render: (text: string, record: any) => {
         const isEditing = record.id === selectedRow?.id
@@ -135,15 +136,24 @@ const DatasetsTable = ({ data, onChangePage, refreshDatasets }: DatasetsTablePro
     {
       title: 'Description',
       dataIndex: 'description',
+      width: 200,
     },
     {
       title: 'Items',
       dataIndex: 'content',
+      ellipsis: true,
+      width: 300,
+      render: (text: string) => (
+        <Tooltip title={text} placement="topLeft">
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: 'Created',
       dataIndex: 'created_at',
       ellipsis: true,
+      width: 150,
       render: (text: string) => (
         <Tooltip title={text} placement="topLeft">
           {convertDateTime(Number(text))}
