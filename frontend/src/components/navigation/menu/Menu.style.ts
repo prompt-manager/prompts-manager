@@ -4,6 +4,7 @@ import styled from 'styled-components'
 const S_Menu = styled(Menu)`
   //height: 100%;
   background-color: var(--background-content);
+  border-inline-end: none !important;
 
   .ant-menu-submenu-title {
     color: var(--text-primary);
@@ -30,6 +31,12 @@ const S_Menu = styled(Menu)`
       &:hover {
         color: var(--highlight) !important;
       }
+    }
+  }
+
+  &.ant-menu-inline {
+    .ant-menu-sub {
+      background: transparent !important;
     }
   }
 `
