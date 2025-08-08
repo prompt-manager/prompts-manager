@@ -7,7 +7,7 @@ export const S_Input = styled(Input)`
 
   &.ant-input {
     background: var(--background) !important;
-    border: 1px solid var(--border-primary);
+    border: 0.2rem solid var(--border-primary);
     color: var(--white);
 
     &:hover,
@@ -34,7 +34,8 @@ export const S_Input = styled(Input)`
 
   &.ant-input-affix-wrapper {
     background: var(--background) !important;
-    border: 1px solid var(--border-primary);
+    border: 0.2rem solid var(--border-primary);
+    border-radius: var(--radius-02);
     color: var(--white);
 
     &:hover {
@@ -87,13 +88,15 @@ export const S_TextArea = styled(Input.TextArea)<ExtendedTextAreaProps>`
   resize: ${({ resize }) => (resize ? '' : 'none')} !important;
 
   background: var(--background);
-  border: 1px solid var(--border-primary);
+  border: 0.2rem solid var(--border-primary);
+  border-radius: var(--radius-02);
   color: var(--white);
 
   &:focus,
   &.ant-input-focused {
     background: var(--background);
-    border: 1px solid var(--highlight);
+    border: 0.2rem solid var(--highlight);
+    border-radius: var(--radius-02);
   }
 
   &::placeholder {
@@ -103,13 +106,13 @@ export const S_TextArea = styled(Input.TextArea)<ExtendedTextAreaProps>`
 
   &:hover {
     background: var(--background);
-    border: 1px solid var(--highlight);
+    border: 0.2rem solid var(--highlight);
   }
 
   &.ant-input-disabled,
   textarea:disabled {
     background-color: var(--disabled-input) !important;
-    border: 1px solid var(--border-primary);
+    border: 0.2rem solid var(--border-primary);
     color: var(--text-disabled);
 
     &::placeholder {
@@ -130,7 +133,8 @@ export const S_InputSearch = styled(Input.Search)`
 
   .ant-input {
     background: var(--background);
-    border: 1px solid var(--border-primary);
+    border: 0.2rem solid var(--border-primary);
+    border-radius: var(--radius-02);
     color: var(--white);
 
     &::placeholder {
@@ -140,17 +144,17 @@ export const S_InputSearch = styled(Input.Search)`
 
     &:focus {
       background: var(--background);
-      border: 1px solid var(--highlight);
+      border: 0.2rem solid var(--highlight);
     }
 
     &:hover {
       background: var(--background);
-      border: 1px solid var(--highlight);
+      border: 0.2rem solid var(--highlight);
     }
 
     &:disabled {
       background-color: var(--disabled-input);
-      border: 1px solid var(--border-primary);
+      border: 0.2rem solid var(--border-primary);
       color: var(--text-disabled);
 
       &::placeholder {
@@ -162,20 +166,21 @@ export const S_InputSearch = styled(Input.Search)`
 
   .ant-input-affix-wrapper {
     background: var(--background);
-    border: 1px solid var(--border-primary);
+    border: 0.2rem solid var(--border-primary);
+    border-radius: var(--radius-02);
     color: var(--white);
 
     &:hover {
-      border: 1px solid var(--highlight);
+      border: 0.2rem solid var(--highlight);
     }
 
     &.ant-input-affix-wrapper-focused {
-      border: 1px solid var(--highlight);
+      border: 0.2rem solid var(--highlight);
     }
 
     &.ant-input-affix-wrapper-disabled {
       background-color: var(--disabled-input);
-      border: 1px solid var(--border-primary);
+      border: 0.2rem solid var(--border-primary);
       color: var(--text-disabled);
 
       input {
@@ -191,12 +196,12 @@ export const S_InputSearch = styled(Input.Search)`
   }
 
   .ant-input-search-button {
-    border: 0.1rem solid var(--border-primary);
+    border: 0.2rem solid var(--border-primary);
     background: transparent;
     color: var(--text-label) !important;
     height: 3rem;
     &:hover {
-      border: 0.1rem solid var(--border-primary) !important;
+      border: 0.2rem solid var(--border-primary) !important;
       background: var(--background) !important;
       color: var(--highlight) !important;
     }

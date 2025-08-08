@@ -7,6 +7,7 @@ type CustomTagType = 'full' | 'outline'
 
 interface ExtendedTagProps extends TagProps {
   color?: string
+  borderColor?: string
   type?: CustomTagType
   width?: string
   fullText?: string
@@ -15,7 +16,8 @@ interface ExtendedTagProps extends TagProps {
 }
 
 const Tag = ({
-  color = '#3aafc7',
+  color = 'var(--tag-primary)',
+  borderColor = 'var(--navy-01)',
   type = 'full',
   width,
   fullText,
@@ -29,6 +31,7 @@ const Tag = ({
       $color={color}
       $tagType={type}
       $clickable={clickable}
+      $borderColor={borderColor}
       width={width}
       onClick={onClick}
       {...props}

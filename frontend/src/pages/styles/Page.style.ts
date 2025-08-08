@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import {
-  Typo_body_02, Typo_heading_01,
+  Typo_body_02,
+  Typo_heading_01,
   Typo_heading_03,
   Typo_heading_06_bold,
 } from '../../styles/constants/typogrphy'
@@ -43,7 +44,6 @@ export const S_DisabledContent = styled.div<DisabledContentProps>`
       : null}
 `
 S_DisabledContent.displayName = 'S_DisabledContent'
-
 
 export const S_UploadContainer = styled.div`
   display: flex;
@@ -94,12 +94,12 @@ export const S_PromptVersion = styled.div<{ isSelected?: boolean }>`
   gap: var(--spacing-04);
   width: 100%;
   height: 8rem;
-  border-radius: var(--radius-01);
+  border-radius: var(--radius-02);
   background: ${({ isSelected }) => (isSelected ? 'var(--layer-01)' : 'transparent')};
 
   &:hover {
     cursor: pointer;
-    border-radius: var(--radius-01);
+    border-radius: var(--radius-02);
     background: var(--layer-03-hover);
   }
 `
@@ -130,14 +130,14 @@ export const S_PromptVersionDetailContent = styled.div`
 `
 
 export const S_ThemeSwitch = styled.div`
-    width: 100%;
-    height: 4.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-03);
-    color: var(--text-primary);
-    background: var(--navy-03);
-    border-radius: var(--radius-02);
-    ${Typo_heading_01};
+  width: 100%;
+  height: 4.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-03);
+  color: var(--text-primary);
+  background: var(--navy-03);
+  border-radius: var(--radius-02);
+  ${Typo_heading_01};
 `

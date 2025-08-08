@@ -4,6 +4,7 @@ import { Tag } from 'antd'
 interface StyleProps {
   $tagType?: 'full' | 'outline'
   $color?: string
+  $borderColor?: string
   $clickable?: boolean
   width?: string
 }
@@ -18,11 +19,16 @@ const S_Tag = styled(Tag)<StyleProps>`
   overflow: hidden;
   text-overflow: ellipsis;
 
-  ${({ $tagType = 'full', $color = '#3aafc7', $clickable = true }) => {
+  ${({
+    $tagType = 'full',
+    $color = 'var(--tag-primary)',
+    $borderColor = 'var(--border-interactive)',
+    $clickable = true,
+  }) => {
     if ($tagType === 'outline') {
       return `
         background: transparent;
-        border: 1px solid ${$color};
+        border:.1rem solid ${$borderColor};
         color: ${$color};
         transition: all 0.2s;
 
@@ -39,13 +45,14 @@ const S_Tag = styled(Tag)<StyleProps>`
     } else {
       return `
         background: ${$color};
-        border: none;
+        border:.1rem solid ${$borderColor};
         color: var(--white);
         transition: all 0.2s;
 
         ${
           $clickable
             ? `&:hover {
+            color: ${$color};
                 cursor: pointer;
                 background: var(--highlight);
               }`

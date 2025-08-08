@@ -18,7 +18,7 @@ export const S_Upload = styled(Upload)<UploadProps>`
 
   .ant-upload-list-item {
     border-radius: var(--spacing-01) !important;
-    border: 0.2rem solid var(--border-primary);
+    border: 0.2rem solid var(--border-interactive);
     padding: var(--spacing-02);
     height: 3.6rem !important;
     color: var(--text-primary);
@@ -67,7 +67,7 @@ export const S_UploadContainer = styled.div`
   }
 
   .ant-form-item-has-error & {
-    border: 0.1rem dashed var(--border-error);
+    border: 0.2rem dashed var(--border-error);
 
     .anticon {
       color: var(--error);
