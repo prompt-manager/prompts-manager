@@ -24,7 +24,7 @@ const S_Descriptions = styled(Descriptions)<DescriptionsProps>`
   }
 
   .ant-descriptions-item-content {
-    color: white;
+    color: var(--text-primary);
   }
 `
 

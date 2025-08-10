@@ -100,7 +100,8 @@ export const S_PromptVersion = styled.div<{ isSelected?: boolean }>`
   &:hover {
     cursor: pointer;
     border-radius: var(--radius-02);
-    background: var(--layer-03-hover);
+    background: var(--highlight);
+    opacity: 0.8;
   }
 `
 
