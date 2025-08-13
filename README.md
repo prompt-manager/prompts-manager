@@ -6,25 +6,23 @@ Prompt Manager는 프롬프트 작성, 관리, 평가, 데이터셋 관리 등�
 
 ---
 
-# Prompt Manager - Frontend
+## Prompt Manager - Frontend
 
-## 📌 개요
+### 📌 개요
 Prompt Manager 프로젝트의 프론트엔드 저장소입니다.  
 이 저장소는 `prompts-manager` 레포지토리 내 `frontend` 폴더에 위치하며,  
 UI 개발 및 프론트엔드 로직을 담당합니다.
 
----
 
-## 🚀 주요 기능
+### 🚀 주요 기능
 - 프롬프트 생성 / 수정 / 관리 UI
 - 데이터셋 및 평가 페이지
 - Ant Design 기반 UI 컴포넌트
 - React Router 기반 페이지 라우팅
 - 상태 관리 (React 상태 훅)
 
----
 
-## 🛠 기술 스택
+### 🛠 기술 스택
 - **React** (CRA 또는 Vite 기반)
 - **TypeScript**
 - **Ant Design**
@@ -32,9 +30,8 @@ UI 개발 및 프론트엔드 로직을 담당합니다.
 - **React Router**
 - **npm** (패키지 매니저)
 
----
 
-## 📂 폴더 구조 예시
+### 📂 폴더 구조 예시
 
 ```
 frontend/
@@ -53,7 +50,7 @@ frontend/
 ```
 
 
-## ⚙️ 환경 변수 설정
+### ⚙️ 환경 변수 설정
 프로젝트 실행 전 `.env` 파일을 생성하고 필요한 변수를 설정하세요.
 
 ```env
@@ -67,7 +64,7 @@ npm start
 
 # 프로덕션 빌드
 npm run build
-
+```
 ---
 
 # Backend
@@ -75,13 +72,13 @@ npm run build
 ## 📌 개요
 (백엔드 개요 작성 — 예: Node.js/Express 기반 API 서버, DB 등)
 
-## 🛠 기술 스택
+### 🛠 기술 스택
 - Node.js
 - Express
 - MongoDB (예시)
 - npm
 
-## ⚙️ 실행 방법
+### ⚙️ 실행 방법
 ```bash
 cd backend
 npm install
