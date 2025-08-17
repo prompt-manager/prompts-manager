@@ -21,7 +21,7 @@ tags_metadata = [
         "description": "프롬프트의 생성, 조회, 수정, 삭제 등 기본 CRUD 작업",
     },
     {
-        "name": "📊 2. 데이터셋 관리", 
+        "name": "📊 2. 데이터셋 관리",
         "description": "데이터셋의 업로드, 수정, 삭제, 다운로드 등 관리 작업",
     },
     {
@@ -60,7 +60,7 @@ app = FastAPI(
     """,
     version="1.0.0",
     lifespan=lifespan,
-    openapi_tags=tags_metadata
+    openapi_tags=tags_metadata,
 )
 
 # CORS 설정
@@ -92,5 +92,7 @@ async def root():
 async def custom_http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(
         status_code=exc.status_code,
-        content=ResponseSchema(data=None, message=exc.detail).model_dump(),
+        content=ResponseSchema(
+            status="error", data=None, message=exc.detail
+        ).model_dump(),
     )

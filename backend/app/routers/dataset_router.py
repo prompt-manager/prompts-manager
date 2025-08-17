@@ -1,11 +1,25 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Body, Query, Depends
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    UploadFile,
+    File,
+    Form,
+    Body,
+    Query,
+    Depends,
+)
 from typing import List, Optional
 from app.database import database
 from app.models.dataset_model import datasets
 from app.schemas.dataset_schema import DatasetRead, DatasetUpdate
 from app.schemas.response_schema import ResponseSchema
 from app.schemas.pagination_schema import PaginationParams, PaginatedResponse
-from app.utils.response_utils import create_success_response, create_error_response, create_paginated_response, get_total_count
+from app.utils.response_utils import (
+    create_success_response,
+    create_error_response,
+    create_paginated_response,
+    get_total_count,
+)
 from sqlalchemy import select, insert, delete, update, or_, func
 from datetime import datetime, timezone
 from fastapi.responses import Response, JSONResponse
@@ -49,8 +63,11 @@ async def upload_dataset(
     )
 
     if existing_dataset:
-        raise HTTPException(
-            status_code=400, detail=f"Dataset with name '{name}' already exists."
+        # 중복 시에도 성공 응답으로 처리 (프론트엔드에서 message로 판단)
+        return ResponseSchema(
+            status="success",
+            data=None,
+            message=f"Dataset with name '{name}' already exists.",
         )
 
     if file.content_type != "text/csv":
@@ -74,7 +91,22 @@ async def upload_dataset(
     )
 
     created_dataset = await database.fetch_one(query)
-    return create_success_response(created_dataset, "데이터셋이 성공적으로 생성되었습니다.")
+
+    # 성공 시 message를 null로 설정 (프론트엔드 에러 감지용)
+    if isinstance(created_dataset, dict):
+        converted_data = created_dataset
+    elif hasattr(created_dataset, "_mapping"):  # Database record
+        from app.utils.response_utils import convert_record_to_dict
+
+        converted_data = convert_record_to_dict(created_dataset)
+    else:
+        converted_data = created_dataset
+
+    return ResponseSchema(
+        status="success",
+        data=converted_data,
+        message=None,  # 성공 시 null로 설정
+    )
 
 
 # 모든 데이터셋 페이지네이션 조회
@@ -96,7 +128,7 @@ async def upload_dataset(
                                     "id": 1,
                                     "name": "dataset1",
                                     "description": "설명",
-                                    "created_at": 1750064190
+                                    "created_at": 1750064190,
                                 }
                             ],
                             "page": 1,
@@ -104,9 +136,9 @@ async def upload_dataset(
                             "total": 5,
                             "total_pages": 1,
                             "has_next": False,
-                            "has_prev": False
+                            "has_prev": False,
                         },
-                        "message": "데이터셋 목록을 성공적으로 조회했습니다."
+                        "message": "데이터셋 목록을 성공적으로 조회했습니다.",
                     }
                 }
             },
@@ -115,7 +147,7 @@ async def upload_dataset(
 )
 async def get_datasets_paginated(
     pagination: PaginationParams = Depends(),
-    search: str = Query(None, description="이름이나 설명으로 검색")
+    search: str = Query(None, description="이름이나 설명으로 검색"),
 ):
     """
     모든 데이터셋을 페이지네이션으로 조회합니다.
@@ -124,46 +156,45 @@ async def get_datasets_paginated(
     try:
         # 기본 쿼리 구성
         base_query = select(datasets)
-        
+
         # 검색 필터링 적용
         if search:
             base_query = base_query.where(
                 or_(
                     datasets.c.name.ilike(f"%{search}%"),
-                    datasets.c.description.ilike(f"%{search}%")
+                    datasets.c.description.ilike(f"%{search}%"),
                 )
             )
-        
+
         # 전체 개수 조회
-        count_query = select(func.count()).select_from(
-            base_query.alias()
-        )
+        count_query = select(func.count()).select_from(base_query.alias())
         total = await database.fetch_one(count_query)
         total_count = total[0] if total else 0
-        
+
         # 페이지네이션 적용된 데이터 조회
         paginated_query = (
-            base_query
-            .order_by(datasets.c.created_at.desc())
+            base_query.order_by(datasets.c.created_at.desc())
             .limit(pagination.size)
             .offset((pagination.page - 1) * pagination.size)
         )
-        
+
         items = await database.fetch_all(paginated_query)
-        
+
         filter_message = f" (검색: {search})" if search else ""
         message = f"데이터셋 목록을 성공적으로 조회했습니다{filter_message}."
-        
+
         return create_paginated_response(
             items=items,
             page=pagination.page,
             size=pagination.size,
             total=total_count,
-            message=message
+            message=message,
         )
-        
+
     except Exception as e:
-        return create_error_response(f"데이터셋 목록 조회 중 오류가 발생했습니다: {str(e)}")
+        return create_error_response(
+            f"데이터셋 목록 조회 중 오류가 발생했습니다: {str(e)}"
+        )
 
 
 # 간단한 데이터셋 목록 조회 (드롭다운용)
@@ -182,9 +213,9 @@ async def get_datasets_paginated(
                         "data": [
                             {"id": 1, "name": "dataset1"},
                             {"id": 2, "name": "dataset2"},
-                            {"id": 3, "name": "dataset3"}
+                            {"id": 3, "name": "dataset3"},
                         ],
-                        "message": "데이터셋 목록을 성공적으로 조회했습니다."
+                        "message": "데이터셋 목록을 성공적으로 조회했습니다.",
                     }
                 }
             },
@@ -194,34 +225,33 @@ async def get_datasets_paginated(
 async def get_datasets_list():
     """
     드롭다운이나 선택 목록용 간단한 데이터셋 목록을 조회합니다.
-    
+
     id와 name만 포함된 가벼운 응답을 반환합니다.
     모든 데이터셋을 최신 생성순으로 정렬하여 반환합니다.
     """
     try:
         # id와 name만 선택하여 조회
-        query = (
-            select(datasets.c.id, datasets.c.name)
-            .order_by(datasets.c.created_at.desc())
+        query = select(datasets.c.id, datasets.c.name).order_by(
+            datasets.c.created_at.desc()
         )
-        
+
         items = await database.fetch_all(query)
-        
+
         # 딕셔너리 형태로 수동 변환
         dataset_list = [{"id": item[0], "name": item[1]} for item in items]
-        
+
         # 직접 딕셔너리 반환 (ResponseSchema 사용하지 않음)
         return {
             "status": "success",
             "data": dataset_list,
-            "message": "데이터셋 목록을 성공적으로 조회했습니다."
+            "message": "데이터셋 목록을 성공적으로 조회했습니다.",
         }
-        
+
     except Exception as e:
         return {
-            "status": "error", 
+            "status": "error",
             "data": None,
-            "message": f"데이터셋 목록 조회 중 오류가 발생했습니다: {str(e)}"
+            "message": f"데이터셋 목록 조회 중 오류가 발생했습니다: {str(e)}",
         }
 
 
@@ -256,15 +286,21 @@ async def delete_dataset(dataset_id: int):
 
     데이터셋이 존재하지 않으면 404 오류를 반환합니다.
     """
-    query = delete(datasets).where(datasets.c.id == dataset_id)
-    result = await database.execute(query)
+    # 먼저 데이터셋이 존재하는지 확인
+    query = select(datasets).where(datasets.c.id == dataset_id)
+    existing_dataset = await database.fetch_one(query)
 
-    if result:
-        return JSONResponse(
-            status_code=200,
-            content={"detail": f"Dataset {dataset_id} has been deleted."},
-        )
-    raise HTTPException(status_code=404, detail="Dataset not found.")
+    if not existing_dataset:
+        raise HTTPException(status_code=404, detail="Dataset not found.")
+
+    # 데이터셋 삭제
+    delete_query = delete(datasets).where(datasets.c.id == dataset_id)
+    await database.execute(delete_query)
+
+    return create_success_response(
+        {"detail": f"Dataset {dataset_id} has been deleted."},
+        "데이터셋이 성공적으로 삭제되었습니다.",
+    )
 
 
 # 특정 데이터셋 조회
@@ -344,8 +380,7 @@ async def update_dataset(
     # 만약 content를 요청에 포함했다면 에러 처리
     if "content" in update_data:
         raise HTTPException(
-            status_code=400,
-            detail="Content field cannot be updated via this API."
+            status_code=400, detail="Content field cannot be updated via this API."
         )
 
     if not update_data:
@@ -355,14 +390,13 @@ async def update_dataset(
     if "name" in update_data and update_data["name"] != existing_dataset.name:
         duplicate_check = await database.fetch_one(
             select(datasets).where(
-                datasets.c.name == update_data["name"],
-                datasets.c.id != dataset_id
+                datasets.c.name == update_data["name"], datasets.c.id != dataset_id
             )
         )
         if duplicate_check:
             raise HTTPException(
-                status_code=400, 
-                detail=f"Dataset with name '{update_data['name']}' already exists."
+                status_code=400,
+                detail=f"Dataset with name '{update_data['name']}' already exists.",
             )
 
     # updated_at 필드 추가
@@ -378,7 +412,9 @@ async def update_dataset(
 
     updated_dataset = await database.fetch_one(update_query)
 
-    return create_success_response(updated_dataset, "데이터셋이 성공적으로 수정되었습니다.")
+    return create_success_response(
+        updated_dataset, "데이터셋이 성공적으로 수정되었습니다."
+    )
 
 
 # 데이터셋 다운로드
@@ -440,10 +476,12 @@ async def search_datasets(query: str = Query(..., description="검색할 키워�
     query_stmt = select(datasets).where(
         or_(
             datasets.c.name.ilike(f"%{query}%"),
-            datasets.c.description.ilike(f"%{query}%")
+            datasets.c.description.ilike(f"%{query}%"),
         )
     )
 
     search_results = await database.fetch_all(query_stmt)
 
-    return create_success_response(search_results, "데이터셋 검색이 성공적으로 완료되었습니다.")
+    return create_success_response(
+        search_results, "데이터셋 검색이 성공적으로 완료되었습니다."
+    )

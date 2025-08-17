@@ -570,7 +570,7 @@ async def set_production_prompt(
     activate_query = (
         update(prompts)
         .where(prompts.c.id == prompt_id)
-        .values(production=True)
+        .values(production=True, updated_at=datetime.now(timezone.utc))
         .returning(prompts)
     )
     activated_prompt = await database.fetch_one(activate_query)
