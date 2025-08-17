@@ -9,6 +9,7 @@ dependencies = [
     "databases>=0.9.0",
     "fastapi>=0.115.12",
     "psycopg2-binary>=2.9.10",
+    "python-multipart>=0.0.6",
     "sqlalchemy>=2.0.41",
     "uvicorn>=0.34.3",
 ]

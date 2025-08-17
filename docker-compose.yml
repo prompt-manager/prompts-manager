@@ -1,8 +1,9 @@
 version: '3.8'
 
 services:
+  # PostgreSQL 데이터베이스
   db:
-    image: postgres:latest
+    image: postgres:17-alpine
     container_name: prompt-db
     environment:
       POSTGRES_USER: promptuser
@@ -13,11 +14,76 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
+      - prompt-network
       - chatai-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U promptuser -d promptdb"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # FastAPI 백엔드
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prompt-backend
+    environment:
+      - DATABASE_URL=postgresql://promptuser:promptpass@db:5432/promptdb
+      - ENVIRONMENT=development
+    ports:
+      - "1122:1122"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - prompt-network
+      - chatai-network
+    volumes:
+      - ./backend:/app
+      - ./logs/backend:/app/logs
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # React 프론트엔드
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: prompt-frontend
+    environment:
+      - REACT_APP_API_URL=http://localhost:1122
+      - REACT_APP_DEV_PROXY_SERVER=http://backend:1122
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - prompt-network
+      - chatai-network
+    volumes:
+      - ./logs/frontend:/var/log/app
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
 
 volumes:
   pgdata:
 
 networks:
+  prompt-network:
+    driver: bridge
   chatai-network:
     external: true

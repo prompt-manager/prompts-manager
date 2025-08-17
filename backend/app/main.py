@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -5,14 +6,24 @@ from contextlib import asynccontextmanager
 from app.database import database, engine, metadata
 from app.routers import prompt_router, dataset_router, evaluation_router  # 라우터 추가
 from app.schemas.response_schema import ResponseSchema
+from app.logging_config import setup_logging
+
+# 로깅 설정 초기화
+logger = setup_logging()
+logger.info("🚀 FastAPI 애플리케이션 시작")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("🔧 데이터베이스 테이블 생성 중...")
     metadata.create_all(engine)
+    logger.info("🔌 데이터베이스 연결 중...")
     await database.connect()
+    logger.info("✅ 애플리케이션 시작 완료")
     yield
+    logger.info("🔌 데이터베이스 연결 해제 중...")
     await database.disconnect()
+    logger.info("✅ 애플리케이션 종료 완료")
 
 
 tags_metadata = [
@@ -85,6 +96,7 @@ app.include_router(evaluation_router.router)
 
 @app.get("/")
 async def root():
+    logger.info("🏠 루트 엔드포인트 접근")
     return {"message": "프롬프트 및 데이터셋 관리 서버 준비 완료!"}
 
 
